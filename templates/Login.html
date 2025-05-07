@@ -3,5 +3,20 @@
 Login
 {% endblock %}
 {% block content %}
-<p>Login</p>
+<div class="center">
+<h4 class="text-center">Login med dine oplysninger</h4>
+<form class="mx-auto">
+    <div class="centerlogin">
+      <label for="inputEmail4" class="form-label">Brugernavn</label>
+      <input type="email" class="form-control" id="inputEmail4">
+    </div>
+    <div class="centerlogin">
+      <label for="inputPassword4" class="form-label">Adgangskode</label>
+      <input type="password" class="form-control" id="inputPassword4">
+    </div>
+    <div class="centerlogin">
+      <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+  </form> 
+</div>
 {% endblock %}
