@@ -1,7 +1,52 @@
-from flask import Flask, request,  render_template
+from flask import Flask, request, render_template, redirect, url_for, render_template_string
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user, UserMixin
 from sqlite3 import Connection
 
+
 app = Flask(__name__)
+app.secret_key = b"c14b9c56bfdf5e2c323ef19e9d6fa73612c5bac72b79fbfaa89c17f30c975fb4"
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+class User(UserMixin):
+    def __init__(self, username, password):
+        self.id = username
+        self.password = password
+
+users = {'elias': User('elias', 'secret')}
+
+@login_manager.user_loader
+def user_loader(id):
+    return users.get(id)
+
+@app.route("/login/", methods = ["GET", "POST"])
+def login():
+    if request.method == "POST":
+        user = users.get(request.form.get("username"))
+
+        if user is None or user.password != request.form["password"]:
+            print("FAILED")
+            return redirect(url_for("login"))
+
+        print("YAAAAA!")
+        login_user(user)
+        return redirect(url_for("protected"))
+    else:
+        return render_template("Login.html")
+
+@app.route("/protected")
+@login_required
+def protected():
+    return render_template_string(
+        "Logged in as: {{ user.id }}",
+        user=current_user
+    )
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return "Logged out"
 
 def addResultsToDatabase(name, age):
     try:
@@ -23,11 +68,6 @@ def home():
 @app.route("/Spørgeskema1/")
 def spørgeskema1():
     return render_template("Spørgeskema1.html")
-
-@app.route("/login/")
-def login():
-    return render_template("login.html")
-
 
 @app.route("/testInsertDatabase/", methods = ["GET", "POST"])
 def testInsertDatabase():
