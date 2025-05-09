@@ -1,81 +1,63 @@
-from flask import Flask, request, render_template, redirect, url_for, render_template_string
+from flask import Flask, request, render_template, redirect, url_for 
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user, UserMixin
-from sqlite3 import Connection
-
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///SurveyDatabase.db"
 app.secret_key = b"c14b9c56bfdf5e2c323ef19e9d6fa73612c5bac72b79fbfaa89c17f30c975fb4"
+
+db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login"
 
+class Users(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
 
-class User(UserMixin):
-    def __init__(self, username, password):
-        self.id = username
-        self.password = password
-
-users = {'elias': User('elias', 'secret')}
+with app.app_context():
+    db.create_all()
 
 @login_manager.user_loader
-def user_loader(id):
-    return users.get(id)
+def load_user(user_id):
+    return Users.query.get(int(user_id))
 
-@app.route("/login/", methods = ["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = users.get(request.form.get("username"))
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-        if user is None or user.password != request.form["password"]:
-            print("FAILED")
-            return redirect(url_for("login"))
+        user = Users.query.filter_by(username=username).first()
 
-        print("YAAAAA!")
-        login_user(user)
-        return redirect(url_for("protected"))
-    else:
-        return render_template("Login.html")
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for("patientList"))
+        else:
+            return render_template("login.html", error="Invalid username or password")
 
-@app.route("/protected")
-@login_required
-def protected():
-    return render_template_string(
-        "Logged in as: {{ user.id }}",
-        user=current_user
-    )
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return "Logged out"
-
-def addResultsToDatabase(name, age):
-    try:
-        con = Connection("SurveyDatabase.db")
-        cur = con.cursor()
-        params = (name, age)
-        sql = """INSERT INTO Survey1 (name, age) VALUES(?, ?)"""
-        cur.execute(sql, params)
-        con.commit()
-        con.close()
-    except:
-        print("Failed to connect to database!")
+    return render_template("login.html")
 
 @app.route("/")
 def home():
-    #addResultsToDatabase("Theo", 26)
     return render_template("home.html")
 
-@app.route("/Spørgeskema1/")
-def spørgeskema1():
-    return render_template("Spørgeskema1.html")
+@app.route("/spørgeskema1/")
+def sporgeskema1():
+    return render_template("spørgeskema1.html")
 
-@app.route("/testInsertDatabase/", methods = ["GET", "POST"])
-def testInsertDatabase():
-    if request.method == "POST":
-        name = request.form.get("fname")
-        age =  request.form.get("age")
-        addResultsToDatabase(name, age)
-    return render_template("testInsertDatabase.html")
+@app.route("/patientList/")
+@login_required
+def patientList():
+    return render_template("patientList.html", username=current_user.username)
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 if __name__ == ('__main__'):
     app.run(host="0.0.0.0", debug=True)
