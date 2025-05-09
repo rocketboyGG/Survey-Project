@@ -3,273 +3,201 @@
 Spørgeskema 1
 {% endblock %}
 {% block content %}
-<p>Spørgeskema 1</p>
-<div class="card">
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-md-6">
-              <label for="inputFornavn4" class="form-label">Fornavn</label>
-              <input type="Oliver" class="form-control" id="inputFornavn4" placeholder="Oliver">
+
+<!-- Knap der sender Data-->
+<form id="spørgeskema" action="/URL til dataabase" method="POST">
+
+    <!-- Personlig Information -->
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="fornavn" class="form-label">Fornavnavn:</label>
+                    <input type="text" class="form-control" id="fornavn" name="fornavn" placeholder="Oliver">
+                </div>
+                <div class="col-md-6">
+                    <label for="efternavn" class="form-label">Efternavn:</label>
+                    <input type="text" class="form-control" id="efternavn" name="efternavn" placeholder="Skaarup">
+                </div>
+                <div class="col-12">
+                    <label for="CPR-nummer" class="form-label">CPR-Nummer</label>
+                    <input type="text" class="form-control" id="CPR-nummer" placeholder="071296-xxxx">
+                </div>
             </div>
-            <div class="col-md-6">
-              <label for="inputEfternavn4" class="form-label">Efternavn</label>
-              <input type="Skaarup" class="form-control" id="inputEfternavn4" placeholder="Skaarup">
-            </div>
-            <div class="col-12">
-              <label for="inputCPR-Nummer" class="form-label">CPR-Nummer</label>
-              <input type="xxxxxx-xxxx" class="form-control" id="inputAddress" placeholder="071296-xxxx">
-            </div>
         </div>
     </div>
-  </div>
+    
+    <!-- Spørgsmål et -->
+    <div class="card">
+        <div class="card-body">
+            <p>sover du alene?</p>
 
-<div class="card" style="width: 18rem;">
-<div class="card-body">
-    <h5 class="card-title">hvor mange timer sover du om natten?</h5>
-    <p class="card-text">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Under syv timer
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Mellem syv & ni timer
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Over ni timer
-            </label>
-          </div>
-          <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">Uddyb her...</label>
-        </div>
-    </p>
-</div>
-</div>
+            <input type="radio" id="ja" name="sover du alene?" value="ja">
+            <label for="ja">ja</label><br>
 
+            <input type="radio" id="nej" name="sover du alene?" value="nej">
+            <label for="nej">nej</label><br>
+            <br>
 
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?</h5>
-      <p class="card-text">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Ca. 15 minutter
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Ca. 30 minutter
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Ca. 45 minutter
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Ca. en time
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Over 1 time
-            </label>
-          </div>
-          <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">Uddyb her...</label>
+            <label for="sover du alene?">uddyb her</label>
+            <input type="text" class="form-control" id="sover du alene?" placeholder="skriv her...">
+
         </div>
     </div>
 
+    <!-- Spørgsmål to -->
+    <div class="card">
+        <div class="card-body">
+            <p>føler du dig veludhvilet når du vågner?</p>
 
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Hvor mange gange vågner du om natten?</h5>
-      <p class="card-text">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              En gang
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              To gange
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Tre gange
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Fire gange
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Fem gange
-            </label>
-          </div>
-          <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">Uddyb her...</label>
+            <input type="radio" id="ja" name="føler du dig veludhvilet når du vågner?" value="ja">
+            <label for="ja">ja</label><br>
+
+            <input type="radio" id="nej" name="føler du dig veludhvilet når du vågner?" value="nej">
+            <label for="nej">nej</label><br>
+            <br>
+
+            <label for="føler du dig veludhvilet når du vågner?">uddyb her</label>
+            <input type="text" class="form-control" id="føler du dig veludhvilet når du vågner?" placeholder="skriv her...">
+
         </div>
-      </p>
     </div>
-  </div>
 
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Hvad laver du, fra du lægger dig i sengen, til du sover?</h5>
-      <p class="card-text">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Lægger med din telefon.
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Læser en bog.
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Mediterer.
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              onanerer.
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              har sex.
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Ser TV.
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Læser en bog.
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Tænker meget over ting.
-            </label>
-        
-            <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">Uddyb her...</label>
+    <!-- Spørgsmål tre -->
+    <div class="card">
+        <div class="card-body">
+            <p>Har du oplevet søvnparalyse</p>
+
+            <input type="radio" id="ja" name="Har du oplevet søvnparalyse" value="ja">
+            <label for="ja">ja</label><br>
+
+            <input type="radio" id="nej" name="Har du oplevet søvnparalyse" value="nej">
+            <label for="nej">nej</label><br>
+            <br>
+
+            <label for="Har du oplevet søvnparalyse">uddyb her</label>
+            <input type="text" class="form-control" id="Har du oplevet søvnparalyse" placeholder="skriv her...">
+
         </div>
-      </p>
     </div>
-  </div>
 
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Har du oplevet søvnparalyse</h5>
-      <p class="card-text">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              ja
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Nej
-            </label>
-          </div>
-          <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">Uddyb her...</label>
-          </div>
-      </p>
+    <!-- Spørgsmål fire -->
+    <div class="card">
+        <div class="card-body">
+            <p>Hvad laver du, fra du lægger dig i sengen, til du sover?</p>
+
+            <input type="radio" id="Lægger med din telefon" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="Lægger med din telefon">
+            <label for="Lægger med din telefon">Lægger med din telefon</label><br>
+
+            <input type="radio" id="Læser en bog" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="Læser en bog">
+            <label for="Læser en bog">Læser en bog</label><br>
+
+            <input type="radio" id="Mediterer" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="Mediterer">
+            <label for="Mediterer">Mediterer</label><br>
+
+            <input type="radio" id="onanerer" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="onanerer">
+            <label for="onanerer">onanerer</label><br>
+
+            <input type="radio" id="har sex" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="har sex">
+            <label for="har sex">har sex</label><br>
+
+            <input type="radio" id="Ser TV" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="Ser TV">
+            <label for="Ser TV">Ser TV</label><br>
+
+            <input type="radio" id="Læser en bog" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="Læser en bog">
+            <label for="Læser en bog">Læser en bog</label><br>
+
+            <input type="radio" id="Tænker meget over ting" name="Hvad laver du, fra du lægger dig i sengen, til du sover?" value="Tænker meget over ting">
+            <label for="Tænker meget over ting">Tænker meget over ting</label><br>
+            <br>
+
+            <label for="Hvad laver du, fra du lægger dig i sengen, til du sover?">uddyb her</label>
+            <input type="text" class="form-control" id="Hvad laver du, fra du lægger dig i sengen, til du sover?" placeholder="skriv her...">
+
+        </div>
     </div>
-  </div>
 
+    <!-- Spørgsmål fem -->
+    <div class="card">
+        <div class="card-body">
+            <p>Hvor mange gange vågner du om natten?</p>
 
-  <div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Føler du dig veludhvilet når du sover</h5>
-      <p class="card-text">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Ja
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Nej
-            </label>
-          </div>
-          <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">Uddyb her...</label>
-          </div>
-      </p>
+            <input type="radio" id="En gang" name="Hvor mange gange vågner du om natten?" value="En gang">
+            <label for="En gang">En gang</label><br>
+
+            <input type="radio" id="To gange" name="Hvor mange gange vågner du om natten?" value="To gange">
+            <label for="To gange">To gange</label><br>
+
+            <input type="radio" id="Tre gange" name="Hvor mange gange vågner du om natten?" value="Tre gange">
+            <label for="Tre gange">Tre gange</label><br>
+
+            <input type="radio" id="Fire gange" name="Hvor mange gange vågner du om natten?" value="Fire gange">
+            <label for="Fire gange">Fire gange</label><br>
+
+            <input type="radio" id="Fem gange" name="Hvor mange gange vågner du om natten?" value="Fem gange">
+            <label for="Fem gange">Fem gange</label><br>
+            <br>
+
+            <label for="Hvor mange gange vågner du om natten?">uddyb her</label>
+            <input type="text" class="form-control" id="Hvor mange gange vågner du om natten?" placeholder="skriv her...">
+
+        </div>
     </div>
-  </div>
 
+    <!-- Spørgsmål seks -->
+    <div class="card">
+        <div class="card-body">
+            <p>hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?</p>
 
-  <div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Sover du alene?</h5>
-      <p class="card-text">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-            <label class="form-check-label" for="radioDefault1">
-              Ja
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-            <label class="form-check-label" for="radioDefault2">
-              Nej
-            </label>
-          </div>
-          <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">Uddyb her...</label>
-          </div>
-      </p>
+            <input type="radio" id="Ca. 15 minutter" name="hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?" value="Ca. 15 minutter">
+            <label for="Ca. 15 minutter">Ca. 15 minutter</label><br>
+
+            <input type="radio" id="Ca. 30 minutter" name="hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?" value="Ca. 30 minutter">
+            <label for="Ca. 30 minutter">Ca. 30 minutter</label><br>
+
+            <input type="radio" id="Ca. 45 minutter" name="hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?" value="Ca. 45 minutter">
+            <label for="Ca. 45 minutter">Ca. 45 minutter</label><br>
+
+            <input type="radio" id="Ca. en time" name="hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?" value="Ca. en time">
+            <label for="Ca. en time">Ca. en time</label><br>
+            
+            <input type="radio" id="Over en time" name="hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?" value="Over en time">
+            <label for="Over en time">Over en time</label><br>
+            <br>
+
+            <label for="hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?">uddyb her</label>
+            <input type="text" class="form-control" id="hvor lang tid tager det dig at falde i søvn, efter du har lagt dig i sengen?" placeholder="skriv her...">
+
+        </div>
     </div>
-  </div>
 
+    <!-- Spørgsmål syv -->
+    <div class="card">
+        <div class="card-body">
+            <p>hvor mange timer sover du om natten?</p>
 
+            <input type="radio" id="Under syv timer" name="hvor mange timer sover du om natten?" value="Under syv timer">
+            <label for="Under syv timer">Under syv timer</label><br>
+
+            <input type="radio" id="Mellem syv & ni timer" name="hvor mange timer sover du om natten?" value="Mellem syv & ni timer">
+            <label for="Mellem syv & ni timer">Mellem syv & ni timer</label><br>
+
+            <input type="radio" id="Over ni timer" name="hvor mange timer sover du om natten?" value="Over ni timer">
+            <label for="Over ni timer">Over ni timer</label><br>
+            <br>
+
+            <label for="hvor mange timer sover du om natten?">uddyb her</label>
+            <input type="text" class="form-control" id="hvor mange timer sover du om natten?" placeholder="skriv her...">
+
+        </div>
+    </div>
+    <br>
+    <!-- Spørgsmål otte... maybe to come -->
+
+    <div class="row g-3">
+        <button type="submit" class="col-md-6 btn btn-primary">Send</button>
+        <button type="button" class="col-md-6 btn btn-success" onclick="GemOgSend">Gem & Send</button>
+    </div>
+    <br>
+</form>
 {% endblock %}

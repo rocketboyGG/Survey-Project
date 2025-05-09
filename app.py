@@ -1,19 +1,19 @@
 from flask import Flask, render_template
-from flask_login import LoginManager
+#from flask_login import LoginManager
 from sqlite3 import Connection
 
-login_manager = LoginManager()
+#login_manager = LoginManager()
 
 app = Flask(__name__)
-login_manager.init_app(app)
+#login_manager.init_app(app)
 app.secret_key = b"c14b9c56bfdf5e2c323ef19e9d6fa73612c5bac72b79fbfaa89c17f30c975fb4"
-
+"""
 def addResultsToDatabase(name, age):
     try:
         con = Connection("SurveyDatabase.db")
         cur = con.cursor()
         params = (name, age)
-        sql = """INSERT INTO Survey1 (name, age) VALUES(?, ?)"""
+        sql = INSERT INTO Survey1 (name, age) VALUES(?, ?)
         cur.execute(sql, params)
         cur.commit()
         con.close()
@@ -44,15 +44,19 @@ def login():
 
         return flask.redirect(next or flask.url_for('index'))
     return flask.render_template('login.html', form=form)
-
+"""
 @app.route("/")
 def home():
-    addResultsToDatabase("Theo", 26)
+    #addResultsToDatabase("Theo", 26)
     return render_template("home.html")
 
 @app.route("/Spørgeskema1/")
 def spørgeskema1():
     return render_template("Spørgeskema1.html")
+
+@app.route("/test/")
+def test():
+    return render_template("test.html")
 
 @app.route("/login/")
 def login():
