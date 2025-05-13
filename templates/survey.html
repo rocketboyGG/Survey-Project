@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}
+Survey
+{% endblock %}
+{% block content %}
+<form action="{{url_for("survey")}}" method="POST">
+
+<h2>{{ survey.title }}</h2>
+<p>{{ survey.desc }}</p>
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="firstname" class="form-label">First name:</label>
+                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Oliver" required>
+            </div>
+            <div class="col-md-6">
+                <label for="lastname" class="form-label">Last name:</label>
+                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skaarup" required>
+            </div>
+            <div class="col-12">
+                <label for="CPR-number" class="form-label">CPR-Number</label>
+                <input type="text" class="form-control" id="CPR-number" name="cpr" placeholder="071296-xxxx" required>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for question in survey.questions %}
+    <div class="card">
+        <div class="card-body">
+            <label>{{question.text}}</label> <br>
+            {% for choice in question.choices %}
+                <label>
+                    <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" required>
+                    {{choice.text}}
+                </label> <br>
+            {% endfor %}
+            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+        </div>
+    </div>
+    <br>
+{% endfor %}
+<button type="submit">Submit!</button>
+</form>
+
+{% endblock %}

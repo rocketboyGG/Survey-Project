@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for 
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 app = Flask(__name__)
@@ -59,9 +59,11 @@ class Answer(db.Model):
 with app.app_context():
     db.create_all()
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -81,180 +83,9 @@ def login():
 
 @app.route("/")
 def home():
+    #create_survey_1()
+    #generate_admin_login()
     return render_template("home.html")
-
-@app.route("/spørgeskema1/", methods = ["GET", "POST"])
-def spørgeskema1():
-    if request.method == "POST":
-        patient = Patient(firstname=request.form["fornavn"], 
-                          lastname=request.form["efternavn"],
-                          cpr=request.form["cpr"])
-
-        db.session.add(patient)
-        db.session.flush()
-        survey = Survey.query.filter_by(title="Spørgeskema1").first()
-        if survey is None:
-            survey = Survey(title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
-            db.session.add(survey)
-            db.session.flush()
-
-        response = Response(
-            surveyid = survey.id,
-            patientid = patient.id
-        )
-        db.session.add(response)
-        db.session.flush()
-
-        """ Add question 1"""
-        sp1tekst = request.form["sp1tekst"] 
-        q1 = Question.query.filter_by(text=sp1tekst).first()
-        if q1 is None:
-            q1 = Question(
-                surveyid=survey.id, 
-                text=sp1tekst
-            )
-            db.session.add(q1)
-            db.session.flush()
-            q1ch1 = Choice(
-                questionid = q1.id,
-                text = request.form["sp1option1"]
-            )
-            q1ch2 = Choice(
-                questionid = q1.id,
-                text = request.form["sp1option2"]
-            )
-            db.session.add(q1ch1)
-            db.session.add(q1ch2)
-            db.session.commit()
-
-        q1svar = Choice.query.filter_by(text=request.form["sp1svar"], questionid=q1.id).first()
-        q1ans = Answer(
-            questionid = q1.id,
-            choiceid =  q1svar.id,
-            responseid = response.id,
-            text = request.form["sp1uddyb"]
-        )
-        db.session.add(q1ans)
-
-        """ Add question 2"""
-        sp2tekst = request.form["sp2tekst"] 
-        q2 = Question.query.filter_by(text=sp2tekst).first()
-        if q2 is None:
-            q2 = Question(
-                surveyid=survey.id, 
-                text=request.form["sp2tekst"]
-            )
-            db.session.add(q2)
-            db.session.flush()
-            q2ch1 = Choice(
-                questionid = q2.id,
-                text = request.form["sp2option1"]
-            )
-            q2ch2 = Choice(
-                questionid = q2.id,
-                text = request.form["sp2option2"]
-            )
-            db.session.add(q2ch1)
-            db.session.add(q2ch2)
-            db.session.commit()
-
-        q2svar = Choice.query.filter_by(text=request.form["sp2svar"], questionid=q2.id).first()
-        q2ans = Answer(
-            questionid = q2.id,
-            choiceid =  q2svar.id,
-            responseid = response.id,
-            text = request.form["sp2uddyb"]
-        )
-        db.session.add(q2ans)
-
-        """ Add question 3"""
-        sp3tekst = request.form["sp3tekst"] 
-        q3 = Question.query.filter_by(text=sp3tekst).first()
-        if q3 is None:
-            q3 = Question(
-                surveyid=survey.id, 
-                text=request.form["sp3tekst"]
-            )
-            db.session.add(q3)
-            db.session.flush()
-            q3ch1 = Choice(
-                questionid = q3.id,
-                text = request.form["sp3option1"]
-            )
-            q3ch2 = Choice(
-                questionid = q3.id,
-                text = request.form["sp3option2"]
-            )
-            db.session.add(q3ch1)
-            db.session.add(q3ch2)
-            db.session.commit()
-
-        q3svar = Choice.query.filter_by(text=request.form["sp3svar"], questionid=q3.id).first()
-        q3ans = Answer(
-            questionid = q3.id,
-            choiceid =  q3svar.id,
-            responseid = response.id,
-            text = request.form["sp3uddyb"]
-        )
-        db.session.add(q3ans)
-
-        """ Add question 4"""
-        sp4tekst = request.form["sp4tekst"] 
-        q4 = Question.query.filter_by(text=sp4tekst).first()
-        if q4 is None:
-            q4 = Question(
-                surveyid=survey.id, 
-                text=request.form["sp4tekst"]
-            )
-            db.session.add(q4)
-            db.session.flush()
-            q4ch1 = Choice(
-                questionid = q4.id,
-                text = request.form["sp4option1"]
-            )
-            q4ch2 = Choice(
-                questionid = q4.id,
-                text = request.form["sp4option2"]
-            )
-            q4ch3 = Choice(
-                questionid = q4.id,
-                text = request.form["sp4option3"]
-            )
-            q4ch4 = Choice(
-                questionid = q4.id,
-                text = request.form["sp4option4"]
-            )
-            q4ch5 = Choice(
-                questionid = q4.id,
-                text = request.form["sp4option5"]
-            )
-            q4ch6 = Choice(
-                questionid = q4.id,
-                text = request.form["sp4option6"]
-            )
-            q4ch7 = Choice(
-                questionid = q4.id,
-                text = request.form["sp4option7"]
-            )
-            db.session.add(q4ch1)
-            db.session.add(q4ch2)
-            db.session.add(q4ch3)
-            db.session.add(q4ch4)
-            db.session.add(q4ch5)
-            db.session.add(q4ch6)
-            db.session.add(q4ch7)
-            db.session.commit()
-
-        q4svar = Choice.query.filter_by(text=request.form["sp4svar"], questionid=q4.id).first()
-        q4ans = Answer(
-            questionid = q4.id,
-            choiceid =  q4svar.id,
-            responseid = response.id,
-            text = request.form["sp4uddyb"]
-        )
-        db.session.add(q4ans)
-        db.session.commit()
-    return render_template("spørgeskema1.html")
 
 @app.route("/patientList/")
 @login_required
@@ -266,6 +97,129 @@ def patientList():
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+@app.route("/survey", methods = ["GET", "POST"])
+def survey():
+    survey = Survey.query.get_or_404(1)
+    if request.method == "POST":
+        patient = Patient(
+            firstname=request.form["firstname"], 
+            lastname=request.form["lastname"],
+            cpr=request.form["cpr"])
+        db.session.add(patient)
+        db.session.flush()
+        response = Response(surveyid=survey.id, patientid=patient.id)
+        db.session.add(response)
+        db.session.flush()
+
+        for question in survey.questions:
+            fieldOption = f"question_{question.id}"
+            fieldText = f"question_{question.id}_uddyb"
+            value = request.form.get(fieldOption)
+            text = request.form.get(fieldText)
+
+            answer = Answer(questionid=question.id,choiceid=int(value), responseid=response.id, text=text)
+            db.session.add(answer)
+
+        db.session.commit()
+            
+    return render_template("survey.html", survey=survey)
+
+def create_survey_1():
+    survey = Survey(title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
+    db.session.add(survey)
+    db.session.flush()
+    q1 = Question(
+        surveyid=survey.id,
+        text="Sover du alene?"
+    )
+    db.session.add(q1)
+    db.session.flush()
+    q1ch1 = Choice(
+        questionid=q1.id,
+        text="Ja"
+    )
+    q1ch2 = Choice(
+        questionid=q1.id,
+        text="Nej"
+    )
+    db.session.add_all([q1ch1, q1ch2])
+
+    q2 = Question(
+        surveyid=survey.id,
+        text="Føler du dig veludhvilet, når du vågner?"
+    )
+    db.session.add(q2)
+    db.session.flush()
+    q2ch1 = Choice(
+        questionid=q2.id,
+        text="Ja"
+    )
+    q2ch2 = Choice(
+        questionid=q2.id,
+        text="Nej"
+    )
+    db.session.add_all([q2ch1, q2ch2])
+
+    q3 = Question(
+        surveyid=survey.id,
+        text="Har du oplevet søvnparalyse?"
+    )
+    db.session.add(q3)
+    db.session.flush()
+    q3ch1 = Choice(
+        questionid=q3.id,
+        text="Ja"
+    )
+    q3ch2 = Choice(
+        questionid=q3.id,
+        text="Nej"
+    )
+    db.session.add_all([q3ch1, q3ch2])
+
+    q4 = Question(
+        surveyid=survey.id,
+        text="Hvad laver du, fra du ligger dig i sengen, til du sover?"
+    )
+    db.session.add(q4)
+    db.session.flush()
+    q4ch1 = Choice(
+        questionid=q4.id,
+        text="Ligger med din telefon"
+    )
+    q4ch2 = Choice(
+        questionid=q4.id,
+        text="Læser en bog"
+    )
+    q4ch3 = Choice(
+        questionid=q4.id,
+        text="Mediterer"
+    )
+    q4ch4 = Choice(
+        questionid=q4.id,
+        text="Onanerer"
+    )
+    q4ch5 = Choice(
+        questionid=q4.id,
+        text="Har sex"
+    )
+    q4ch6 = Choice(
+        questionid=q4.id,
+        text="Ser TV"
+    )
+    q4ch7 = Choice(
+        questionid=q4.id,
+        text="Tænker meget over ting"
+    )
+    db.session.add_all([q4ch1, q4ch2, q4ch3, q4ch4, q4ch5, q4ch6, q4ch7])
+    db.session.commit()
+
+def generate_admin_login():
+    password = "123"
+    hashpass = generate_password_hash(password)
+    admin = Users(username="admin", password=hashpass)
+    db.session.add(admin)
+    db.session.commit()
 
 if __name__ == ('__main__'):
     app.run(host="0.0.0.0", debug=True)
