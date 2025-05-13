@@ -102,7 +102,7 @@ def go_to_patient(patientid):
 @app.route("/patientdata/<int:patientid>")
 @login_required
 def patientdata(patientid):
-    responses = Response.query.filter_by(patientid=patientid)
+    responses = Response.query.filter_by(patientid=patientid).all()
     return render_template("patientdata.html", responses=responses)
 
 

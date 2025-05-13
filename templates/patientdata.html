@@ -3,16 +3,20 @@
 Patient Data
 {% endblock %}
 {% block content %}
-<p>Patient List</p>
-<a class="btn btn-secondary" href="/logout" role="button">Logout</a>
+<a class="btn btn-secondary" href="/logout" role="button">Logout</a> <br>
+
+<label>Patient: {{ responses[0].patient.firstname}} {{ responses[0].patient.lastname}} {{ responses[0].patient.cpr}}</label>
 
 {% for response in responses %}
     <div class="card">
         <div class="card-body">
-            <label> {{response.survey.title}}</label> <hr>
+            <label> {{ response.survey.title }}</label> <hr>
             {% for answer in response.answers%}
                 <label> {{answer.question.text}} </label>
                 <label> -> Answer: {{answer.choice.text}} </label> <br>
+                {% if answer.text != "" %}
+                    <p> Uddybelse:  {{answer.text}} </p>
+                {% endif%}
             {% endfor %}
         </div>
     </div>
