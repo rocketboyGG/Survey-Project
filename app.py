@@ -48,6 +48,7 @@ class Response(db.Model):
     patientid = db.Column(db.Integer,db.ForeignKey('patient.id'), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now()) 
     answers = db.relationship('Answer', backref='response', cascade="all, delete-orphan")
+    patient = db.relationship('Patient', backref='responses', lazy=True)
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -55,15 +56,15 @@ class Answer(db.Model):
     choiceid = db.Column(db.Integer,db.ForeignKey('choice.id'), nullable=False)
     responseid = db.Column(db.Integer,db.ForeignKey('response.id'), nullable=False)
     text = db.Column(db.String(500), nullable=False)
+    question = db.relationship('Question', backref='answers', lazy=True)
+    choice = db.relationship('Choice', backref='answers', lazy=True)
 
 with app.app_context():
     db.create_all()
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -75,7 +76,7 @@ def login():
 
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for("patientList"))
+            return redirect(url_for("patientlist"))
         else:
             return render_template("login.html", error="Invalid username or password")
 
@@ -87,10 +88,23 @@ def home():
     #generate_admin_login()
     return render_template("home.html")
 
-@app.route("/patientList/")
+@app.route("/patientlist/")
 @login_required
-def patientList():
-    return render_template("patientList.html", username=current_user.username)
+def patientlist():
+    patients = Patient.query.all()
+    return render_template("patientlist.html", username=current_user.username, patients=patients)
+
+@app.route("/go_to_patient/<int:patientid>")
+@login_required
+def go_to_patient(patientid):
+    return redirect(url_for("patientdata", patientid=patientid))
+
+@app.route("/patientdata/<int:patientid>")
+@login_required
+def patientdata(patientid):
+    responses = Response.query.filter_by(patientid=patientid)
+    return render_template("patientdata.html", responses=responses)
+
 
 @app.route("/logout")
 @login_required
