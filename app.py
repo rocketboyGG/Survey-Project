@@ -139,6 +139,45 @@ def survey():
             
     return render_template("survey.html", survey=survey)
 
+#Route til survey builder
+@app.route('/survey_builder', methods=['GET', 'POST'])  #GET viser HTML-siden, når man besøger siden(GET request), POST er når man submitter dataen til databasen
+def survey_builder():   #Survey builder funktion
+    if request.method == "POST":    #Sker kun på en POST request(submit knap)
+        title = request.form.get('title')   #Tager den string som er indtastet i det html tekst input som har: name="title"
+        description = request.form.get('description')   #Tager den string som er indtastet i det html tekst input som har: name="description"
+        questions_data = request.form.getlist('questions')  #Tager alle inputs som har: name="questions" og gemmer dem som en liste
+
+        if not title or not questions_data: #Sørger for at man ikke kan submit et survey uden minimum titel og et spørgsmål, men eftersom vores tekst input er sat som required,
+            return "Missing data", 400      # er det her kun som ekstra sikkerhed på backend. Fordi det er muligt at bypass required client-side
+                                            #400 = HTTP status code:"Bad Request"
+        #Laver nyt survey
+        new_survey = Survey(title=title, desc=description)  #Laver et new_survey objekt fra Survey class'en og vælger hvilke værdier der skal indsættes på title og desc
+        db.session.add(new_survey)  #Tilføjer new_survey til SQLAlchemy sessionen
+        db.session.flush()  #Pusher til databasen uden at commit, for at få et ID for survey(skal bruges til questions)
+
+        #Loop igennem questions og tilhørende choices
+        for i, question_text in enumerate(questions_data):  #enumerate tilknytter et index(i) tal til hvert question string for bedre at holde styr på det
+            
+            #Laver nyt question
+            question = Question(text=question_text, surveyid=new_survey.id) #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og surveyid
+            db.session.add(question)    #Tilføjer question til SQLAlchemy sessionen
+            db.session.flush()  #Pusher til databasen uden at commit, for at få et ID for question (skal brues til choices)
+
+            #Henter choices for dette spørgsmål
+            choices_name = f'choices_{i}[]' #Tildeler samme alle choices, som tilhører spørgsmålet, samme index(i) tal som spørgsmålet
+            question_choices = request.form.getlist(choices_name)   #Tager alle inputs som har: name="choices_{i}[]" og gemmer dem som en liste
+
+            #Tilføjer choices til databasen
+            for choice_text in question_choices:    #Looper igennem alle choices og tilføjer dem en af gangen
+                if choice_text.strip():  #Sikre at de ikke er tomme. Endnu et backend sikkerheds check eftersom tekst input er sat som required.
+                    choice = Choice(text=choice_text, questionid=question.id)   #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og questionid
+                    db.session.add(choice)  #Tilføjer choice til SQLAlchemy sessionen
+
+        db.session.commit()     #Commit'er til databasen
+        return redirect(url_for('home'))    #Sender tilbage til homepage efter spørgeskema tilføjes til database
+
+    return render_template('survey_builder.html')   #Loader HTML-siden, koden kommer med det samme her ned eftersom at survey_builder funktionen først bliver kørt igennem ved at trykke på submit kannpen(POST request)
+
 def create_survey_1():
     survey = Survey(title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
     db.session.add(survey)
