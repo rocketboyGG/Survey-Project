@@ -156,7 +156,7 @@ def survey_builder():   #Survey builder funktion
         db.session.flush()  #Pusher til databasen uden at commit, for at få et ID for survey(skal bruges til questions)
 
         #Loop igennem questions og tilhørende choices
-        for i, question_text in enumerate(questions_data):  #enumerate tilknytter et index(i) tal til hvert question string for bedre at holde styr på det
+        for i, question_text in enumerate(questions_data):  #enumerate tilknytter et index(i) tal, til hver question string, for bedre at holde styr på det
             
             #Laver nyt question
             question = Question(text=question_text, surveyid=new_survey.id) #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og surveyid
@@ -164,11 +164,11 @@ def survey_builder():   #Survey builder funktion
             db.session.flush()  #Pusher til databasen uden at commit, for at få et ID for question (skal brues til choices)
 
             #Henter choices for dette spørgsmål
-            choices_name = f'choices_{i}[]' #Tildeler samme alle choices, som tilhører spørgsmålet, samme index(i) tal som spørgsmålet
+            choices_name = f'choices_{i}[]' #Tildeler alle choices samme index(i) tal som spørgsmålet de tilhører
             question_choices = request.form.getlist(choices_name)   #Tager alle inputs som har: name="choices_{i}[]" og gemmer dem som en liste
 
             #Tilføjer choices til databasen
-            for choice_text in question_choices:    #Looper igennem alle choices og tilføjer dem en af gangen
+            for choice_text in question_choices:    #Looper igennem alle choices og tilføjer dem en ad gangen
                 if choice_text.strip():  #Sikre at de ikke er tomme. Endnu et backend sikkerheds check eftersom tekst input er sat som required.
                     choice = Choice(text=choice_text, questionid=question.id)   #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og questionid
                     db.session.add(choice)  #Tilføjer choice til SQLAlchemy sessionen
@@ -176,7 +176,7 @@ def survey_builder():   #Survey builder funktion
         db.session.commit()     #Commit'er til databasen
         return redirect(url_for('home'))    #Sender tilbage til homepage efter spørgeskema tilføjes til database
 
-    return render_template('survey_builder.html')   #Loader HTML-siden, koden kommer med det samme her ned eftersom at survey_builder funktionen først bliver kørt igennem ved at trykke på submit kannpen(POST request)
+    return render_template('survey_builder.html')   #Loader HTML-siden, koden kommer med det samme her ned eftersom at survey_builder funktionen først bliver kørt igennem ved at trykke på submit knappen(POST request)
 
 def create_survey_1():
     survey = Survey(title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
