@@ -29,6 +29,18 @@ body {
     border: 1px solid #000;
 }
 
+.admin {
+    padding: 10px 0;
+    text-align: center;
+}
+.logout {
+    text-align: end;
+}
+.backAndlogout {
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+}
 .btn-custom {
     background: linear-gradient(to right, #ccf2e2, #b2e8d4);
     color: #00664d;
