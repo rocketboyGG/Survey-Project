@@ -105,7 +105,6 @@ def patientdata(patientid):
     responses = Response.query.filter_by(patientid=patientid).all()
     return render_template("patientdata.html", responses=responses)
 
-
 @app.route("/logout")
 @login_required
 def logout():
@@ -116,12 +115,15 @@ def logout():
 def survey():
     survey = Survey.query.get_or_404(1)
     if request.method == "POST":
-        patient = Patient(
-            firstname=request.form["firstname"], 
-            lastname=request.form["lastname"],
-            cpr=request.form["cpr"])
-        db.session.add(patient)
-        db.session.flush()
+        patient = Patient.query.filter_by(cpr=request.form["cpr"]).first()
+        if patient is None:
+            patient = Patient(
+                firstname=request.form["firstname"], 
+                lastname=request.form["lastname"],
+                cpr=request.form["cpr"])
+            db.session.add(patient)
+            db.session.flush()
+
         response = Response(surveyid=survey.id, patientid=patient.id)
         db.session.add(response)
         db.session.flush()
