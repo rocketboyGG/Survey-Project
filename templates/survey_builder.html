@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+{% block title %}
+Survey Builder
+{% endblock %}
+{% block content %}
+<div class="centerbuilder">
+<form action="{{ url_for('survey_builder') }}" method="POST">
+    <div class="card">
+        <div class="card-body">
+            <label for="title">Survey Title:</label><br>
+            <input type="text" class="form-control bold-border" name="title" placeholder="Skriv her..." required><br>
+            <label for="description">Description:</label><br>
+            <input type="text" class="form-control bold-border" name="description" placeholder="Skriv her..." required><br><br>
+
+            <div id="questions">
+                <!-- Question Block Template -->
+                <div class="question-wrapper">
+                    <div class="question">
+                        <input type="text" class="form-control bold-border" name="questions" placeholder="Spørgsmål titel..." required>
+
+                        <div class="choices">
+                            <input type="text" class="form-control" name="choices_0[]" placeholder="Svarmulighed..." required>
+                        </div>
+
+                        <a class="btn btn-primary" role="button" onclick="addChoice(this)">Tilføj svarmulighed</a>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <a class="btn btn-primary" role="button" onclick="addQuestion()">Tilføj spørgsmål</a>
+            <br><br>
+            <button class="btn btn-success btn-lg" type="submit">Opret spørgeskema</button>
+        </div>
+    </div>
+</form>
+</div>
+
+<script>
+    let questionCount = 1;
+
+    function addChoice(button) {
+        const questionWrapper = button.closest('.question-wrapper');
+        const choicesDiv = questionWrapper.querySelector('.choices');
+        const qIndex = Array.from(document.querySelectorAll('.question-wrapper')).indexOf(questionWrapper);
+
+        const choiceContainer = document.createElement('div');
+        choiceContainer.classList.add('choice-item');
+
+        const newChoice = document.createElement('input');
+        newChoice.type = 'text';
+        newChoice.name = `choices_${qIndex}[]`;
+        newChoice.placeholder = 'Svarmulighed...';
+        newChoice.required = true;
+        newChoice.classList.add('form-control');
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.textContent = 'X Slet';
+        deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+        deleteBtn.onclick = () => choiceContainer.remove();
+
+        choiceContainer.appendChild(newChoice);
+        choiceContainer.appendChild(deleteBtn);
+        choicesDiv.appendChild(choiceContainer);
+    }
+
+
+    function addQuestion() {
+        const container = document.getElementById('questions');
+
+        const questionWrapper = document.createElement('div');
+        questionWrapper.classList.add('question-wrapper');
+
+        const questionBlock = document.createElement('div');
+        questionBlock.classList.add('question');
+
+        const questionInput = document.createElement('input');
+        questionInput.type = 'text';
+        questionInput.name = 'questions';
+        questionInput.placeholder = 'Spørgsmål titel...';
+        questionInput.required = true;
+        questionInput.classList.add('form-control', 'bold-border');
+
+        const choicesDiv = document.createElement('div');
+        choicesDiv.classList.add('choices');
+
+        const firstChoice = document.createElement('input');
+        firstChoice.type = 'text';
+        firstChoice.name = `choices_${questionCount}[]`;
+        firstChoice.placeholder = 'Svarmulighed...';
+        firstChoice.required = true;
+        firstChoice.classList.add('form-control');
+
+        choicesDiv.appendChild(firstChoice);
+        questionBlock.appendChild(document.createElement('br'));
+
+        const addChoiceBtn = document.createElement('a');
+        addChoiceBtn.classList.add('btn', 'btn-primary');
+        addChoiceBtn.setAttribute('role', 'button');
+        addChoiceBtn.setAttribute('onclick', 'addChoice(this)');
+        addChoiceBtn.textContent = 'Tilføj svarmulighed';
+
+        const deleteQuestionBtn = document.createElement('button');
+        deleteQuestionBtn.type = 'button';
+        deleteQuestionBtn.textContent = 'X Slet spørgsmål';
+        deleteQuestionBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-2');
+        deleteQuestionBtn.onclick = () => questionWrapper.remove();
+
+        questionBlock.appendChild(questionInput);
+        questionBlock.appendChild(choicesDiv);
+        questionBlock.appendChild(addChoiceBtn);
+        questionBlock.appendChild(document.createElement('br'));
+        questionBlock.appendChild(deleteQuestionBtn);
+
+        questionWrapper.appendChild(questionBlock);
+        container.appendChild(questionWrapper);
+
+        questionCount++;
+    }
+</script>
+
+{% endblock %}

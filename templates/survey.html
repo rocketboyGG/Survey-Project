@@ -22,7 +22,7 @@ Survey
             </div>
             <div class="col-12">
                 <label for="CPR-number" class="form-label">CPR-Number</label>
-                <input type="text" class="form-control" id="CPR-number" name="cpr" placeholder="071296-xxxx" required>
+                <input type="text" class="form-control" id="cpr" name="cpr" placeholder="071296-xxxx" required>
             </div>
         </div>
     </div>
@@ -34,16 +34,54 @@ Survey
             <label>{{question.text}}</label> <br>
             {% for choice in question.choices %}
                 <label>
-                    <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" required>
+                    <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}" required>
                     {{choice.text}}
                 </label> <br>
             {% endfor %}
-            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" id="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
         </div>
     </div>
     <br>
 {% endfor %}
-<button type="submit">Submit!</button>
+<button class="btn btn-success" type="submit">Indsend!</button>
+<button type="button" class="btn btn-primary" onclick="saveToPDF()">Gem som PDF</button>
 </form>
+
+<script>
+    async function saveToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+
+      const getVal = id => document.getElementById(id)?.value || '';
+      const getRadio = name => {
+        const selected = document.querySelector(`input[name="${name}"]:checked`);
+        return selected ? selected.getAttribute("data-text") || selected.value : '';
+      };
+
+      doc.setFontSize(16);
+      doc.text("Besvaret Spørgeskema", 10, y);
+      y += 10;
+
+      doc.setFontSize(12);
+      doc.text(`First name: ${getVal("firstname")}`, 10, y); y += 8;
+      doc.text(`Last name: ${getVal("lastname")}`, 10, y); y += 8;
+      doc.text(`CPR Number: ${getVal("cpr")}`, 10, y); y += 10;
+
+      doc.text(`Spørgsmål 1: Sover du alene? Svar: ${getRadio("question_1")}`, 10, y); y += 8;
+      doc.text(`Uddyb svar: ${getVal("question_1_uddyb")}`, 10, y); y += 10;
+
+      doc.text(`Spørgsmål 2: Føler du dig veludhvilet, når du vågner? Svar: ${getRadio("question_2")}`, 10, y); y += 8;
+      doc.text(`Uddyb svar: ${getVal("question_2_uddyb")}`, 10, y); y += 10;
+
+      doc.text(`Spørgsmål 3: Har du oplevet søvn paralyse? Svar: ${getRadio("question_3")}`, 10, y); y += 8;
+      doc.text(`Uddyb svar: ${getVal("question_3_uddyb")}`, 10, y); y += 10;
+
+      doc.text(`Spørgsmål 4: Hvad laver du, fra du ligger dig i sengen, til du sover? Svar: ${getRadio("question_4")}`, 10, y); y += 8;
+      doc.text(`Uddyb svar: ${getVal("question_4_uddyb")}`, 10, y); y += 10;
+
+      doc.save("spoergeskema.pdf");
+    }
+  </script>
 
 {% endblock %}
