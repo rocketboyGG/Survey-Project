@@ -29,16 +29,16 @@ Survey
 </div>
 
 {% for question in survey.questions %}
-    <div class="card">
+    <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}">
         <div class="card-body">
-            <label>{{question.text}}</label> <br>
+            <label class="question-label">{{question.text}}</label> <br>
             {% for choice in question.choices %}
                 <label>
                     <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}" required>
                     {{choice.text}}
                 </label> <br>
             {% endfor %}
-            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" id="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
         </div>
     </div>
     <br>
@@ -48,40 +48,62 @@ Survey
 </form>
 
 <script>
-    async function saveToPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      let y = 10;
+  // En asynchronous funktion vi tilføjer og kalder, som i dette tilfælde er saveToPDF udvidelsen
+  async function saveToPDF() {
+    // Her importerer vi jsPDF klassen fra det globale jspdf library vi har i layout.html (const betyder at det ikke er en reassigned variabel,
+    // f.eks doc, vist længere nede)
+    const { jsPDF } = window.jspdf;
+    // Her laver vi et dokument instans som vi kan write data til
+    const doc = new jsPDF();
+    // Her definerer vi hvor på y-aksen vi er i dokumentet, det vil vi så senere hen rykke videre på
+    let y = 10;
 
-      const getVal = id => document.getElementById(id)?.value || '';
-      const getRadio = name => {
-        const selected = document.querySelector(`input[name="${name}"]:checked`);
-        return selected ? selected.getAttribute("data-text") || selected.value : '';
-      };
+    // Her har vi en variabel med en metode (getValByName) der finder input baseret på et name attribut
+    const getValByName = name => {
+      // Her har vi en konstant variabel med en metode (document.querySelector) der søger på input der indeholder et matchende name attribut og returnerer det
+      // Man kan også vælge en bestemt name attribut hvis man vil det, f.eks document.querySelector('[name="firstname"]');
+      const el = document.querySelector(`[name="${name}"]`);
+      // Returnerer den hentede value (name attribute), i det her tilfælde vil den så vise teksten til spørgsmålet
+      return el?.value || '';
+    };
 
-      doc.setFontSize(16);
-      doc.text("Besvaret Spørgeskema", 10, y);
-      y += 10;
+    const getRadioByName = name => {
+      const selected = document.querySelector(`input[name="${name}"]:checked`);
+      return selected ? selected.getAttribute("data-text") || selected.value : '';
+    };
 
-      doc.setFontSize(12);
-      doc.text(`First name: ${getVal("firstname")}`, 10, y); y += 8;
-      doc.text(`Last name: ${getVal("lastname")}`, 10, y); y += 8;
-      doc.text(`CPR Number: ${getVal("cpr")}`, 10, y); y += 10;
+    // PDF Header
+    doc.setFontSize(16);
+    doc.text("Besvaret Spørgeskema", 10, y); y += 10;
 
-      doc.text(`Spørgsmål 1: Sover du alene? Svar: ${getRadio("question_1")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_1_uddyb")}`, 10, y); y += 10;
+    // Personal Info
+    doc.setFontSize(12);
+    doc.text(`First name: ${getValByName("firstname")}`, 10, y); y += 8;
+    doc.text(`Last name: ${getValByName("lastname")}`, 10, y); y += 8;
+    doc.text(`CPR Number: ${getValByName("cpr")}`, 10, y); y += 10;
 
-      doc.text(`Spørgsmål 2: Føler du dig veludhvilet, når du vågner? Svar: ${getRadio("question_2")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_2_uddyb")}`, 10, y); y += 10;
+    // Loop through questions
+    const questionBlocks = document.querySelectorAll(".question-block");
+    questionBlocks.forEach((block, index) => {
+      const questionId = block.dataset.questionId;
+      const questionText = block.dataset.questionText;
 
-      doc.text(`Spørgsmål 3: Har du oplevet søvn paralyse? Svar: ${getRadio("question_3")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_3_uddyb")}`, 10, y); y += 10;
+      const answer = getRadioByName(`question_${questionId}`);
+      const elaboration = getValByName(`question_${questionId}_uddyb`);
 
-      doc.text(`Spørgsmål 4: Hvad laver du, fra du ligger dig i sengen, til du sover? Svar: ${getRadio("question_4")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_4_uddyb")}`, 10, y); y += 10;
+      doc.text(`Spørgsmål ${index + 1}: ${questionText}`, 10, y); y += 8;
+      doc.text(`Svar: ${answer}`, 10, y); y += 8;
 
-      doc.save("spoergeskema.pdf");
-    }
-  </script>
+      if (elaboration) {
+        doc.text(`Uddybning: ${elaboration}`, 10, y); y += 10;
+      } else {
+        y += 4;
+      }
+    });
+
+    doc.save("spoergeskema.pdf");
+  }
+</script>
+
 
 {% endblock %}
