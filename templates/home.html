@@ -3,11 +3,12 @@
 Home
 {% endblock %}
 {% block content %}
-<center class="center">
-    <p>Home</p>
-    <a class="btn btn-primary" href="{{url_for('survey_builder')}}" role="button">Survey Builder</a>
-    <a class="btn btn-primary" href="{{url_for('login')}}" role="button">Login</a>
-    <a class="btn btn-primary" href="{{url_for('survey', param=1)}}" role="button">Survey</a>
-</center>
+<div class="page-center">
+    
+    <div class="button-row">
+        <a class="btn btn-custom" href="{{ url_for('login') }}">Login</a>
+    </div>
+</div>
+
 
 {% endblock %}

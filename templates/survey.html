@@ -29,16 +29,16 @@ Survey
 </div>
 
 {% for question in survey.questions %}
-    <div class="card">
+    <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}">
         <div class="card-body">
-            <label>{{question.text}}</label> <br>
+            <label class="question-label">{{question.text}}</label> <br>
             {% for choice in question.choices %}
                 <label>
                     <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}" required>
                     {{choice.text}}
                 </label> <br>
             {% endfor %}
-            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" id="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
         </div>
     </div>
     <br>
@@ -48,40 +48,78 @@ Survey
 </form>
 
 <script>
-    async function saveToPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      let y = 10;
+  // En asynchronous funktion vi tilføjer og kalder, som i dette tilfælde er saveToPDF udvidelsen
+  async function saveToPDF() {
+    // Her importerer vi jsPDF klassen fra det globale jspdf library vi har i layout.html (const betyder at det ikke er en reassigned variabel,
+    // f.eks doc, vist længere nede)
+    const { jsPDF } = window.jspdf;
+    // Her laver vi et dokument instans som vi kan write data til
+    const doc = new jsPDF();
+    // Her definerer vi hvor på y-aksen vi er i dokumentet, det vil vi så senere hen rykke videre på
+    let y = 10;
 
-      const getVal = id => document.getElementById(id)?.value || '';
-      const getRadio = name => {
-        const selected = document.querySelector(`input[name="${name}"]:checked`);
-        return selected ? selected.getAttribute("data-text") || selected.value : '';
-      };
+    // Her har vi en variabel med en metode (getValByName) der finder input baseret på et name attribut
+    const getValByName = name => {
+      // Her har vi en konstant variabel med en metode (document.querySelector) der søger på name attributer i et html input og det name der matcher selectoren vil så returneres
+      // Man kan også vælge at søge efter en bestemt name attribut hvis man vil det, f.eks document.querySelector('[name="firstname"]');
+      const el = document.querySelector(`[name="${name}"]`);
+      // Returnerer den hentede value (name attribute), i det her tilfælde vil den så vise teksten til spørgsmålet
+      return el?.value || '';
+    };
 
-      doc.setFontSize(16);
-      doc.text("Besvaret Spørgeskema", 10, y);
-      y += 10;
+    // Her har vi en metode der søger efter det valgte radio input så den kan hente dataen
+    const getRadioByName = name => {
+      // Dette er så den "selected" type input som er "checked"
+      const selected = document.querySelector(`input[name="${name}"]:checked`);
+      // Her returneres selected værdien (input med data-text attributen, viser teksten til spørgsmålet)
+      return selected ? selected.getAttribute("data-text") || selected.value : '';
+    };
 
-      doc.setFontSize(12);
-      doc.text(`First name: ${getVal("firstname")}`, 10, y); y += 8;
-      doc.text(`Last name: ${getVal("lastname")}`, 10, y); y += 8;
-      doc.text(`CPR Number: ${getVal("cpr")}`, 10, y); y += 10;
+    // Her indstiller vi størrelsen på teksten i PDF-filen med .setFontSize metoden, dette er så vores titel størrelse med 16px
+    doc.setFontSize(16);
+    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10. Der er også blevet rykket
+    // 10 positioner ned på y-aksen (y += 10;) for at gøre plads på næste linje
+    doc.text("Besvaret Spørgeskema", 10, y); y += 10;
 
-      doc.text(`Spørgsmål 1: Sover du alene? Svar: ${getRadio("question_1")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_1_uddyb")}`, 10, y); y += 10;
+    // Tekst størrelse på det input vi får fra felterne
+    doc.setFontSize(12);
+    // Her vælger vi teksten og positionen vi gerne vil have til disse felter i PDF-filen, og vi bruger getValByName metoden til at hente dataen fra
+    // vores html input felter og indsætte dem i vores PDF-fil
+    doc.text(`First name: ${getValByName("firstname")}`, 10, y); y += 8;
+    doc.text(`Last name: ${getValByName("lastname")}`, 10, y); y += 8;
+    doc.text(`CPR Number: ${getValByName("cpr")}`, 10, y); y += 10;
 
-      doc.text(`Spørgsmål 2: Føler du dig veludhvilet, når du vågner? Svar: ${getRadio("question_2")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_2_uddyb")}`, 10, y); y += 10;
+    // Denne metode tager alle html elementer der har .question-block klassen. Det vil så returnere en såkaldt NodeList, som er en slags sekvens af
+    // de forskellige elementer der repræsenterer vores spørgsmål
+    const questionBlocks = document.querySelectorAll(".question-block");
+    // Denne metode looper igennem alle ting med .question-block som indeholder block (et element til spørgsmål) og index (spørgsmålets ID)
+    questionBlocks.forEach((block, index) => {
+      // Denne metode tilgår alle html elementer med et data-attribut via dataset metoden og trækker værdien fra data-question-id
+      const questionId = block.dataset.questionId;
+      // Denne metode tager data-question-text attributen (Teksten fra spørgsmålet)
+      const questionText = block.dataset.questionText;
+      // Denne metode kalder vores "helper" funktion (getRadioByName) til at få vores selected radio button værdi, f.eks hvis vores questionID er 3,
+      // vil den lede efter et spørgsmål med name attributen name="question_3"
+      const answer = getRadioByName(`question_${questionId}`);
+      // Denne metode gør nærmest det samme, bare hvor den trækker input fra uddybningsfelterne
+      const elaboration = getValByName(`question_${questionId}_uddyb`);
+      // Her indstiller hvilket spørgsmål der besvares, index + 1 betyder at i stedet for at der står "Spørgsmål 0" vil det så være 1 i stedet.
+      // questionText er så det tekst der står i spørgsmålet.
+      doc.text(`Spørgsmål ${index + 1}: ${questionText}`, 10, y); y += 8;
+      // Her indstiller vi hvilket svar der skal vises
+      doc.text(`Svar: ${answer}`, 10, y); y += 8;
+      // Her har vi et if statement der tjekker om der er blevet skrevet i de uddybende felter, og der bliver indstillet hvilken position svaret skal
+      // have. Hvis der ikke bliver uddybet indsætter den bare 4 positioner ned i y-aksen
+      if (elaboration) {
+        doc.text(`Uddybning: ${elaboration}`, 10, y); y += 10;
+      } else {
+        y += 4;
+      }
+    });
+    // Her indstilles hvad spørgeskema filen hedder når den downloades, her bruges save metoden
+    doc.save("spoergeskema.pdf");
+  }
+</script>
 
-      doc.text(`Spørgsmål 3: Har du oplevet søvn paralyse? Svar: ${getRadio("question_3")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_3_uddyb")}`, 10, y); y += 10;
-
-      doc.text(`Spørgsmål 4: Hvad laver du, fra du ligger dig i sengen, til du sover? Svar: ${getRadio("question_4")}`, 10, y); y += 8;
-      doc.text(`Uddyb svar: ${getVal("question_4_uddyb")}`, 10, y); y += 10;
-
-      doc.save("spoergeskema.pdf");
-    }
-  </script>
 
 {% endblock %}
