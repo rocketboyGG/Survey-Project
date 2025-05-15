@@ -78,7 +78,7 @@ def login():
 
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for("patientlist"))
+            return redirect(url_for("admin_dashboard"))
         else:
             return render_template("login.html", error="Invalid username or password")
 
@@ -90,11 +90,11 @@ def home():
     #generate_admin_login()
     return render_template("home.html")
 
-@app.route("/patientlist/")
+@app.route("/admin_dashboard/")
 @login_required
-def patientlist():
+def admin_dashboard():
     patients = Patient.query.all()
-    return render_template("patientlist.html", username=current_user.username, patients=patients)
+    return render_template("admin_dashboard.html", username=current_user.username, patients=patients)
 
 @app.route("/go_to_patient/<int:patientid>")
 @login_required
@@ -145,6 +145,7 @@ def survey(param):
 
 #Route til survey builder
 @app.route('/survey_builder', methods=['GET', 'POST'])  #GET viser HTML-siden, når man besøger siden(GET request), POST er når man submitter dataen til databasen
+@login_required #Kræver login for at access
 def survey_builder():   #Survey builder funktion
     if request.method == "POST":    #Sker kun på en POST request(submit knap)
         title = request.form.get('title')   #Tager den string som er indtastet i det html tekst input som har: name="title"
@@ -178,16 +179,16 @@ def survey_builder():   #Survey builder funktion
                     db.session.add(choice)  #Tilføjer choice til SQLAlchemy sessionen
 
         db.session.commit()     #Commit'er til databasen
-        return redirect(url_for('home'))    #Sender tilbage til homepage efter spørgeskema tilføjes til database
+        return redirect(url_for('admin_dashboard'))    #Sender tilbage til homepage efter spørgeskema tilføjes til database
 
     return render_template('survey_builder.html')   #Loader HTML-siden, koden kommer med det samme her ned eftersom at survey_builder funktionen først bliver kørt igennem ved at trykke på submit knappen(POST request)
 
 
-@app.route("/surveylist")
+@app.route("/survey_list")
 @login_required
-def surveylist():
+def survey_list():
     surveys = Survey.query.all()
-    return render_template('surveylist.html', surveys=surveys)
+    return render_template('survey_list.html', surveys=surveys)
 
 def create_survey_1():
     survey = Survey(uuid=str(uuid4()), title="Spørgeskema1", desc="Spørgeskema om søvnvaner")

@@ -3,6 +3,10 @@
 Survey Builder
 {% endblock %}
 {% block content %}
+<div class="backAndlogout">
+    <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Back</a>
+    <a class="btn btn-secondary" href="/logout" role="button">Logout</a>
+</div>
 <div class="centerbuilder">
 <form action="{{ url_for('survey_builder') }}" method="POST">
     <div class="card">

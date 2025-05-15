@@ -3,7 +3,10 @@
 Patient Data
 {% endblock %}
 {% block content %}
-<a class="btn btn-secondary" href="/logout" role="button">Logout</a> <br>
+<div class="backAndlogout">
+        <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Back</a>
+        <a class="btn btn-secondary" href="/logout" role="button">Logout</a>
+</div>
 
 <label>Patient: {{ responses[0].patient.firstname}} {{ responses[0].patient.lastname}} {{ responses[0].patient.cpr}}</label>
 
