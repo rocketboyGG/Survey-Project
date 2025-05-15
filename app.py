@@ -187,7 +187,25 @@ def survey_builder():   #Survey builder funktion
 @login_required
 def surveylist():
     surveys = Survey.query.all()
+
     return render_template('surveylist.html', surveys=surveys)
+
+@app.route("/deletesurvey/<string:param>")
+@login_required
+def deletesurvey(param):
+    survey = Survey.query.filter_by(uuid=param).first()
+    """
+    for response in survey.responses:
+        patient = response.patient
+        for res in patient.responses:
+            if res.surveyid is not survey.id:
+                #print(patient.firstname)
+                #db.session.remove(patient)
+    """
+
+    db.session.delete(survey)
+    db.session.commit()
+    return redirect(url_for("surveylist"))
 
 def create_survey_1():
     survey = Survey(uuid=str(uuid4()), title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
