@@ -184,11 +184,11 @@ def survey_builder():   #Survey builder funktion
     return render_template('survey_builder.html')   #Loader HTML-siden, koden kommer med det samme her ned eftersom at survey_builder funktionen først bliver kørt igennem ved at trykke på submit knappen(POST request)
 
 
-@app.route("/surveylist")
+@app.route("/survey_list")
 @login_required
-def surveylist():
+def survey_list():
     surveys = Survey.query.all()
-    return render_template('surveylist.html', surveys=surveys)
+    return render_template('survey_list.html', surveys=surveys)
 
 def create_survey_1():
     survey = Survey(uuid=str(uuid4()), title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
