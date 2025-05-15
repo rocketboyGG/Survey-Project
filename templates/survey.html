@@ -3,7 +3,7 @@
 Survey
 {% endblock %}
 {% block content %}
-<form action="{{url_for("survey")}}" method="POST">
+<form action="{{url_for("survey", param=param)}}" method="POST">
 
 <h2>{{ survey.title }}</h2>
 <p>{{ survey.desc }}</p>

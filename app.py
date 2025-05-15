@@ -111,9 +111,9 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
-@app.route("/survey", methods = ["GET", "POST"])
-def survey():
-    survey = Survey.query.get_or_404(1)
+@app.route("/survey/<int:param>", methods = ["GET", "POST"])
+def survey(param):
+    survey = Survey.query.get_or_404(param)
     if request.method == "POST":
         patient = Patient.query.filter_by(cpr=request.form["cpr"]).first()
         if patient is None:
@@ -139,7 +139,7 @@ def survey():
 
         db.session.commit()
             
-    return render_template("survey.html", survey=survey)
+    return render_template("survey.html", survey=survey, param=param)
 
 #Route til survey builder
 @app.route('/survey_builder', methods=['GET', 'POST'])  #GET viser HTML-siden, når man besøger siden(GET request), POST er når man submitter dataen til databasen
@@ -179,6 +179,13 @@ def survey_builder():   #Survey builder funktion
         return redirect(url_for('home'))    #Sender tilbage til homepage efter spørgeskema tilføjes til database
 
     return render_template('survey_builder.html')   #Loader HTML-siden, koden kommer med det samme her ned eftersom at survey_builder funktionen først bliver kørt igennem ved at trykke på submit knappen(POST request)
+
+
+@app.route("/surveylist")
+@login_required
+def surveylist():
+    surveys = Survey.query.all()
+    return render_template('surveylist.html', surveys=surveys)
 
 def create_survey_1():
     survey = Survey(title="Spørgeskema1", desc="Spørgeskema om søvnvaner")

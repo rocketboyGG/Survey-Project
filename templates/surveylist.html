@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}
+Survey List
+{% endblock %}
+{% block content %}
+<a class="btn btn-secondary" href="/logout" role="button">Logout</a> <br>
+<p> Survey List </p>
+
+<div class="card"></div>
+    <div class="card-body">
+        {% for survey in surveys %}
+            <ul class="list-group">
+                <li class="list-group-item"> {{survey.title}} - {{survey.desc}} </li>
+                <button onclick="copyToClipboard( {{survey.id}} )">Copy to Clipboard</button>
+            </ul>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+
+    const copyToClipboard = async (surveyid) => {
+        try {
+            await navigator.clipboard.writeText(window.location.hostname +"survey/"+ surveyid);
+            console.log("Text copied to clipboard!");
+        } catch (error) {
+            console.error("Failed to copy to clipboard:", error);
+        }
+    };
+</script>
+
+{% endblock %}
