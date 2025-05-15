@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, login_required, current_user, 
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from uuid import uuid4
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///SurveyDatabase.db"
@@ -26,6 +27,7 @@ class Patient(db.Model):
 
 class Survey(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(36), nullable=False)
     title = db.Column(db.String(250), nullable=False)
     desc = db.Column(db.Text)
     questions = db.relationship('Question', backref='survey', cascade="all, delete-orphan")
@@ -111,9 +113,9 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
-@app.route("/survey/<int:param>", methods = ["GET", "POST"])
+@app.route("/survey/<string:param>", methods = ["GET", "POST"])
 def survey(param):
-    survey = Survey.query.get_or_404(param)
+    survey = Survey.query.filter_by(uuid=param).first()
     if request.method == "POST":
         patient = Patient.query.filter_by(cpr=request.form["cpr"]).first()
         if patient is None:
@@ -153,7 +155,7 @@ def survey_builder():   #Survey builder funktion
             return "Missing data", 400      # er det her kun som ekstra sikkerhed på backend. Fordi det er muligt at bypass required client-side
                                             #400 = HTTP status code:"Bad Request"
         #Laver nyt survey
-        new_survey = Survey(title=title, desc=description)  #Laver et new_survey objekt fra Survey class'en og vælger hvilke værdier der skal indsættes på title og desc
+        new_survey = Survey(uuid=str(uuid4()), title=title, desc=description)  #Laver et new_survey objekt fra Survey class'en og vælger hvilke værdier der skal indsættes på title og desc
         db.session.add(new_survey)  #Tilføjer new_survey til SQLAlchemy sessionen
         db.session.flush()  #Pusher til databasen uden at commit, for at få et ID for survey(skal bruges til questions)
 
@@ -188,7 +190,7 @@ def surveylist():
     return render_template('surveylist.html', surveys=surveys)
 
 def create_survey_1():
-    survey = Survey(title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
+    survey = Survey(uuid=str(uuid4()), title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
     db.session.add(survey)
     db.session.flush()
     q1 = Question(
