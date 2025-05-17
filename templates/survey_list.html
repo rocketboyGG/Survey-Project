@@ -13,7 +13,8 @@ Survey List
     <div class="card-body">
         {% for survey in surveys %}
             <ul class="list-group">
-                <li class="list-group-item"> {{survey.title}} - {{survey.desc}} {{survey.uuid}} </li>
+                <a class="list-group-item" href="{{ url_for('survey', param=survey.uuid)}}"> {{survey.title}} - {{survey.desc}} {{survey.uuid}} </a>
+                <a class="btn btn-secondary" href="{{ url_for('survey_stats', param=survey.uuid) }}" role="button">Statistics</a> <br>
                 <button onclick="copyToClipboard('{{ survey.uuid }}')">Copy</button>
                 <a class="btn btn-secondary" href="{{ url_for('deletesurvey', param=survey.uuid) }}" role="button">Delete</a> <br>
             </ul>

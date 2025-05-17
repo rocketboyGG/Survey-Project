@@ -4,6 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from uuid import uuid4
+import matplotlib.pyplot as plt
+import io
+import base64
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///SurveyDatabase.db"
@@ -189,6 +192,29 @@ def survey_builder():   #Survey builder funktion
 def survey_list():
     surveys = Survey.query.all()
     return render_template('survey_list.html', surveys=surveys)
+
+@app.route("/survey_stats/<string:param>")
+@login_required
+def survey_stats(param):
+    survey = Survey.query.filter_by(uuid=param).first()
+    plots = []
+    if len(survey.responses) != 0:
+        for question in survey.questions:
+            labels = []
+            data = []
+            for choice in question.choices:
+                labels.append(choice.text)
+                data.append(len(choice.answers))
+            print(labels, data)
+            fig, ax = plt.subplots()
+            ax.pie(data, labels=labels, autopct='%1.1f%%')
+            img = io.BytesIO()
+            plt.savefig(img, format='png')
+            img.seek(0)
+            img_base64 = base64.b64encode(img.getvalue()).decode()
+            plots.append((question, img_base64))
+             
+    return render_template("survey_stats.html", plots=plots, number_of_res=len(survey.responses))
 
 @app.route("/deletesurvey/<string:param>")
 @login_required

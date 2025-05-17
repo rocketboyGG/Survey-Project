@@ -1,0 +1,14 @@
+
+{% extends "layout.html" %}
+{% block title %}
+Survey Statistics
+{% endblock %}
+{% block content %}
+<a class="btn btn-secondary" href="/logout" role="button">Logout</a> <br>
+<p>Survey Statistics</p>
+<label> This many as answered the survey: {{number_of_res}} </label> <br>
+{% for question, img in plots%}
+    <label> {{question.text}}</label>
+    <img src="data:image/png;base64,{{img}}"> <br>
+{% endfor %}
+{% endblock %}
