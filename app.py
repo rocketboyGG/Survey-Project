@@ -194,18 +194,18 @@ def survey_list():
 @login_required
 def deletesurvey(param):
     survey = Survey.query.filter_by(uuid=param).first()
-    """
-    for response in survey.responses:
-        patient = response.patient
-        for res in patient.responses:
-            if res.surveyid is not survey.id:
-                #print(patient.firstname)
-                #db.session.remove(patient)
-    """
-
-    db.session.delete(survey)
+    with db.session.no_autoflush:
+        for response in survey.responses:
+            patient = response.patient
+            number_of_same_surveys = 0
+            for res in patient.responses:
+                if res.surveyid == survey.id:
+                    number_of_same_surveys += 1
+            if number_of_same_surveys == len(patient.responses):
+                db.session.delete(patient)
+        db.session.delete(survey)
     db.session.commit()
-    return redirect(url_for("surveylist"))
+    return redirect(url_for("survey_list"))
 
 def create_survey_1():
     survey = Survey(uuid=str(uuid4()), title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
