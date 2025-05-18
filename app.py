@@ -38,6 +38,7 @@ class Survey(db.Model):
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    question_type = db.Column(db.Enum('multiple_choice', 'checkbox', 'text', name='question_type_enum'), nullable=False)
     surveyid = db.Column(db.Integer,db.ForeignKey('survey.id'), nullable=False)
     text = db.Column(db.String(500), nullable=False)
     choices = db.relationship('Choice', backref='question', cascade="all, delete-orphan")
@@ -58,11 +59,16 @@ class Response(db.Model):
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     questionid = db.Column(db.Integer,db.ForeignKey('question.id'), nullable=False)
-    choiceid = db.Column(db.Integer,db.ForeignKey('choice.id'), nullable=False)
     responseid = db.Column(db.Integer,db.ForeignKey('response.id'), nullable=False)
-    text = db.Column(db.String(500), nullable=False)
+    text = db.Column(db.String(500))
     question = db.relationship('Question', backref='answers', lazy=True)
-    choice = db.relationship('Choice', backref='answers', lazy=True)
+    choices = db.relationship('ChoiceOptions', backref='answer', cascade="all, delete-orphan")
+
+class ChoiceOptions(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    answerid = db.Column(db.Integer,db.ForeignKey('answer.id'), nullable=False)
+    choiceid = db.Column(db.Integer,db.ForeignKey('choice.id'), nullable=False)
+    choice = db.relationship('Choice', backref='choiceoptions', lazy=True)
 
 with app.app_context():
     db.create_all()
@@ -89,7 +95,7 @@ def login():
 
 @app.route("/")
 def home():
-    #create_survey_1()
+    #create_survey_2()
     #generate_admin_login()
     return render_template("home.html")
 
@@ -134,13 +140,20 @@ def survey(param):
         db.session.flush()
 
         for question in survey.questions:
-            fieldOption = f"question_{question.id}"
-            fieldText = f"question_{question.id}_uddyb"
-            value = request.form.get(fieldOption)
-            text = request.form.get(fieldText)
-
-            answer = Answer(questionid=question.id,choiceid=int(value), responseid=response.id, text=text)
-            db.session.add(answer)
+            if question.question_type == 'text':
+                fieldText = f"question_{question.id}_uddyb"
+                text = request.form.get(fieldText)
+                answer = Answer(questionid=question.id, responseid=response.id, text=text)
+                db.session.add(answer)
+            else:
+                fieldOption = f"question_{question.id}"
+                value = request.form.getlist(fieldOption)
+                answer = Answer(questionid=question.id, responseid=response.id)
+                db.session.add(answer)
+                db.session.flush()
+                for ids in value:
+                    option = ChoiceOptions(answerid=answer.id, choiceid=ids)
+                    db.session.add(option)
 
         db.session.commit()
             
@@ -186,7 +199,6 @@ def survey_builder():   #Survey builder funktion
 
     return render_template('survey_builder.html')   #Loader HTML-siden, koden kommer med det samme her ned eftersom at survey_builder funktionen først bliver kørt igennem ved at trykke på submit knappen(POST request)
 
-
 @app.route("/survey_list")
 @login_required
 def survey_list():
@@ -200,19 +212,20 @@ def survey_stats(param):
     plots = []
     if len(survey.responses) != 0:
         for question in survey.questions:
-            labels = []
-            data = []
-            for choice in question.choices:
-                labels.append(choice.text)
-                data.append(len(choice.answers))
-            print(labels, data)
-            fig, ax = plt.subplots()
-            ax.pie(data, labels=labels, autopct='%1.1f%%')
-            img = io.BytesIO()
-            plt.savefig(img, format='png')
-            img.seek(0)
-            img_base64 = base64.b64encode(img.getvalue()).decode()
-            plots.append((question, img_base64))
+            if question.question_type != 'text':
+                labels = []
+                data = []
+                for choice in question.choices:
+                    labels.append(choice.text)
+                    data.append(len(choice.choiceoptions))
+                print(labels, data)
+                fig, ax = plt.subplots()
+                ax.pie(data, labels=labels, autopct='%1.1f%%')
+                img = io.BytesIO()
+                plt.savefig(img, format='png')
+                img.seek(0)
+                img_base64 = base64.b64encode(img.getvalue()).decode()
+                plots.append((question, img_base64))
              
     return render_template("survey_stats.html", plots=plots, number_of_res=len(survey.responses))
 
@@ -320,6 +333,57 @@ def create_survey_1():
         text="Tænker meget over ting"
     )
     db.session.add_all([q4ch1, q4ch2, q4ch3, q4ch4, q4ch5, q4ch6, q4ch7])
+    db.session.commit()
+
+def create_survey_2():
+    survey = Survey(uuid=str(uuid4()), title="Spørgeskema2", desc="Spørgeskema om søvnvaner igen")
+    db.session.add(survey)
+    db.session.flush()
+
+    q1 = Question(
+        surveyid=survey.id,
+        question_type = 'multiple_choice',
+        text="Sover du alene?"
+    )
+    db.session.add(q1)
+    db.session.flush()
+    q1ch1 = Choice(
+        questionid=q1.id,
+        text="Ja"
+    )
+    q1ch2 = Choice(
+        questionid=q1.id,
+        text="Nej"
+    )
+    db.session.add_all([q1ch1, q1ch2])
+
+    q2 = Question(
+        surveyid=survey.id,
+        question_type = 'checkbox',
+        text="Marker alle de ting du gør før du går i seng?"
+    )
+    db.session.add(q2)
+    db.session.flush()
+    q2ch1 = Choice(
+        questionid=q2.id,
+        text="Kigger på en skærm"
+    )
+    q2ch2 = Choice(
+        questionid=q2.id,
+        text="Drikker masse energi drik"
+    )
+    q2ch3 = Choice(
+        questionid=q2.id,
+        text="Spiller league"
+    )
+    db.session.add_all([q2ch1, q2ch2, q2ch3])
+
+    q3 = Question(
+        surveyid=survey.id,
+        question_type = 'text',
+        text="Har du oplevet søvnparalyse"
+    )
+    db.session.add(q3)
     db.session.commit()
 
 def generate_admin_login():
