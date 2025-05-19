@@ -179,20 +179,29 @@ def survey_builder():   #Survey builder funktion
         #Loop igennem questions og tilhørende choices
         for i, question_text in enumerate(questions_data):  #enumerate tilknytter et index(i) tal, til hver question string, for bedre at holde styr på det
             
+            question_type_input = request.form.get(f"question_type_{i+1}")
+            if question_type_input == "1":
+                question_type = "multiple_choice"
+            elif question_type_input == "2":
+                question_type = "checkbox"
+            else:
+                question_type = "text"
+
             #Laver nyt question
-            question = Question(text=question_text, surveyid=new_survey.id) #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og surveyid
+            question = Question(text=question_text, question_type=question_type, surveyid=new_survey.id) #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og surveyid
             db.session.add(question)    #Tilføjer question til SQLAlchemy sessionen
             db.session.flush()  #Pusher til databasen uden at commit, for at få et ID for question (skal brues til choices)
 
-            #Henter choices for dette spørgsmål
-            choices_name = f'choices_{i}[]' #Tildeler alle choices samme index(i) tal som spørgsmålet de tilhører
-            question_choices = request.form.getlist(choices_name)   #Tager alle inputs som har: name="choices_{i}[]" og gemmer dem som en liste
+            if question_type_input == "1" or question_type_input == "2":
+                #Henter choices for dette spørgsmål
+                choices_name = f'choices_{i+1}[]' #Tildeler alle choices samme index(i) tal som spørgsmålet de tilhører
+                question_choices = request.form.getlist(choices_name)   #Tager alle inputs som har: name="choices_{i}[]" og gemmer dem som en liste
 
-            #Tilføjer choices til databasen
-            for choice_text in question_choices:    #Looper igennem alle choices og tilføjer dem en ad gangen
-                if choice_text.strip():  #Sikre at de ikke er tomme. Endnu et backend sikkerheds check eftersom tekst input er sat som required.
-                    choice = Choice(text=choice_text, questionid=question.id)   #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og questionid
-                    db.session.add(choice)  #Tilføjer choice til SQLAlchemy sessionen
+                #Tilføjer choices til databasen
+                for choice_text in question_choices:    #Looper igennem alle choices og tilføjer dem en ad gangen
+                    if choice_text.strip():  #Sikre at de ikke er tomme. Endnu et backend sikkerheds check eftersom tekst input er sat som required.
+                        choice = Choice(text=choice_text, questionid=question.id)   #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og questionid
+                        db.session.add(choice)  #Tilføjer choice til SQLAlchemy sessionen
 
         db.session.commit()     #Commit'er til databasen
         return redirect(url_for('admin_dashboard'))    #Sender tilbage til homepage efter spørgeskema tilføjes til database
