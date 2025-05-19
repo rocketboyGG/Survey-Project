@@ -29,9 +29,10 @@ Survey
 </div>
 
 {% for question in survey.questions %}
-    <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}">
+    <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
+<<<<<<< Updated upstream
             {% for choice in question.choices %}
                 <label>
                     <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}" required>
@@ -39,6 +40,25 @@ Survey
                 </label> <br>
             {% endfor %}
             <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+=======
+            {% if question.question_type == 'text' %}
+              <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+            {% else %}
+              {% for choice in question.choices %}
+                {% if question.question_type == 'multiple_choice' %}
+                  <label>
+                      <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}" required>
+                      {{choice.text}}
+                  </label> <br>
+                {% elif question.question_type == 'checkbox' %}
+                  <label>
+                      <input type="checkbox" name="question_{{question.id}}[]" value="{{choice.id}}" data-text="{{choice.text}}">
+                      {{choice.text}}
+                  </label> <br>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+>>>>>>> Stashed changes
         </div>
     </div>
     <br>
@@ -58,7 +78,22 @@ Survey
     // Her definerer vi hvor på y-aksen vi er i dokumentet, det vil vi så senere hen rykke videre på
     let y = 10;
 
-    // Her har vi en variabel med en metode (getValByName) der finder input baseret på et name attribut
+    // Her har vi en constant variabel hvor vi bruger getCheckedByName metoden til at finde vores checkbox input (dvs. flere forskellige svar) og sætter
+    // dem ind i vores PDF
+    const getCheckedByName = name => {
+    // Her bruger vi document.querySelectorAll metoden til at vælge alle vores elementer i DOM (Document Object Model, hvilket er hele vores html
+    // struktur) som vi så bruger til at kunne læse tekst fra html i vores javascript kode og blive returneret som en NodeList som er en samling af
+    // vores html elementer. Den næste del af koden vælger alle input elementerne med et name attribut (brackets er en naming convention der kommunikerer
+    // at der kan være flere svar, og at det skal returneres som liste eller array) og :checked betyder at den kun vælger de svar der er valgt af brugeren
+    const selected = document.querySelectorAll(`input[name="${name}[]"]:checked`);
+    // Returnerer svarene fra spørgeskemaet i tekst form. Array.from er en metode der konverterer en NodeList (I dette tilfælde selected) til et 
+    // "real array" så vi kan bruge .map() array metoden til at vise svarene. Inde i .map metoden går den igennem alle el (elementer) og tager den
+    // custom label vi har defineret i vores data-text attribut. .join metoden gør at når svarene bliver vist i PDF'en vil de blive vist med et komma
+    // i mellem dem (Svar 1, Svar 2, etc.)
+    return Array.from(selected).map(el => el.getAttribute("data-text") || el.value).join(", ");
+    };
+
+    // Her har vi endnu en constant variabel med en metode (getValByName) der finder input baseret på et name attribut
     const getValByName = name => {
       // Her har vi en konstant variabel med en metode (document.querySelector) der søger på name attributer i et html input og det name der matcher selectoren vil så returneres
       // Man kan også vælge at søge efter en bestemt name attribut hvis man vil det, f.eks document.querySelector('[name="firstname"]');
@@ -98,9 +133,21 @@ Survey
       const questionId = block.dataset.questionId;
       // Denne metode tager data-question-text attributen (Teksten fra spørgsmålet)
       const questionText = block.dataset.questionText;
+      // Denne metode tager værdien fra data attributen i vores html (altså hvilken type spørgsmål det er, multiple choice eller checkbox f.eks) 
+      const questionType = block.dataset.questionType;
+      // Dette er en tom variabel der så bliver udfyldt senere med vores svar i PDF'en
+      let answer = '';
+      // Her har vi et if statement med hvis vores questionType = multiple_choice
+      if (questionType === 'multiple_choice') {
       // Denne metode kalder vores "helper" funktion (getRadioByName) til at få vores selected radio button værdi, f.eks hvis vores questionID er 3,
       // vil den lede efter et spørgsmål med name attributen name="question_3"
-      const answer = getRadioByName(`question_${questionId}`);
+      answer = getRadioByName(`question_${questionId}`);
+      // Hvis questionType = checkbox
+      } else if (questionType === 'checkbox') {
+      // Denne metode kalder getCheckedByName funktionen, der basically gør det samme som getRadioByName, bare hvor den returnerer de valgte svar fra
+      // checkboxen som en string værdi ("Svar 1, Svar 2")
+      answer = getCheckedByName(`question_${questionId}`);
+      }
       // Denne metode gør nærmest det samme, bare hvor den trækker input fra uddybningsfelterne
       const elaboration = getValByName(`question_${questionId}_uddyb`);
       // Her indstiller hvilket spørgsmål der besvares, index + 1 betyder at i stedet for at der står "Spørgsmål 0" vil det så være 1 i stedet.
