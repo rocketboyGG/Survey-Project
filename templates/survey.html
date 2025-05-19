@@ -32,15 +32,6 @@ Survey
     <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
-<<<<<<< Updated upstream
-            {% for choice in question.choices %}
-                <label>
-                    <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}" required>
-                    {{choice.text}}
-                </label> <br>
-            {% endfor %}
-            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
-=======
             {% if question.question_type == 'text' %}
               <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
             {% else %}
@@ -52,13 +43,12 @@ Survey
                   </label> <br>
                 {% elif question.question_type == 'checkbox' %}
                   <label>
-                      <input type="checkbox" name="question_{{question.id}}[]" value="{{choice.id}}" data-text="{{choice.text}}">
+                      <input type="checkbox" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}">
                       {{choice.text}}
                   </label> <br>
                 {% endif %}
               {% endfor %}
             {% endif %}
->>>>>>> Stashed changes
         </div>
     </div>
     <br>
@@ -167,6 +157,5 @@ Survey
     doc.save("spoergeskema.pdf");
   }
 </script>
-
 
 {% endblock %}
