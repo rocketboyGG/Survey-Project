@@ -112,7 +112,7 @@ Survey
 
     // Her indstiller vi størrelsen på teksten i PDF-filen med .setFontSize metoden, dette er så vores titel størrelse med 16px
     doc.setFontSize(16);
-    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10. Der er også blevet rykket
+    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10 (måles i millimeter). Der er også blevet rykket
     // 10 positioner ned på y-aksen (y += 10;) for at gøre plads på næste linje
     doc.text("Besvaret Spørgeskema", 10, y); y += 10;
 
@@ -159,6 +159,16 @@ Survey
       // have. Hvis der ikke bliver uddybet indsætter den bare 4 positioner ned i y-aksen
       if (elaboration) {
         doc.text(`Uddybning: ${elaboration}`, 10, y); y += 10;
+        // Her har vi en constant variabel der tager den indtastede tekst i uddybningsfeltet og wrapper den ind i adskillige linjer så den passer
+        // indenfor bredden i PDF'en. Der bruges doc.splitTextToSize metoden som tager en lang string (vores tekst) og splitter det til flere arrays,
+        // hvor hver string fylder 180 positioner horisontalt i et array. Dette er så teksten ikke overfylder PDFen
+        const wrappedText = doc.splitTextToSize(`Uddybning: ${elaboration}`, 180);
+        // Denne metode indsætter vores splittede tekst (ovenstående metodes arbejde) i vores PDF-fil
+        doc.text(wrappedText, 10, y);
+        // Denne metode bestemmer at for hver linje (f.eks hvis vi har 3 linjer) vil koden rykke teksten ned med antallet af linjer ganget med 8,
+        // hvor 8 er tekst højden på linjerne. Så hvis der er 3 linjer vil vi så rykke 24 positioner ned
+        y += wrappedText.length * 8;
+      // else statement hvor hvis der ingen uddybning er, vil der blive rykket 4 positioner ned
       } else {
         y += 4;
       }
