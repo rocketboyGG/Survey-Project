@@ -149,7 +149,6 @@ Survey
       // Her har vi et if statement der tjekker om der er blevet skrevet i de uddybende felter, og der bliver indstillet hvilken position svaret skal
       // have. Hvis der ikke bliver uddybet indsætter den bare 4 positioner ned i y-aksen
       if (elaboration) {
-        doc.text(`Uddybning: ${elaboration}`, 10, y); y += 10;
         // Her har vi en constant variabel der tager den indtastede tekst i uddybningsfeltet og wrapper den ind i adskillige linjer så den passer
         // indenfor bredden i PDF'en. Der bruges doc.splitTextToSize metoden som tager en lang string (vores tekst) og splitter det til flere arrays,
         // hvor hver string fylder 180 positioner horisontalt i et array. Dette er så teksten ikke overfylder PDFen
