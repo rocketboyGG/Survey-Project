@@ -13,15 +13,15 @@ Survey
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-6">
-                <label for="firstname" class="form-label">First name:</label>
+                <label for="firstname" class="form-label">Fornavn:</label>
                 <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Oliver" required>
             </div>
             <div class="col-md-6">
-                <label for="lastname" class="form-label">Last name:</label>
+                <label for="lastname" class="form-label">Efternavn:</label>
                 <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skaarup" required>
             </div>
             <div class="col-12">
-                <label for="CPR-number" class="form-label">CPR-Number</label>
+                <label for="CPR-number" class="form-label">CPR-Nummer</label>
                 <input type="text" class="form-control" id="cpr" name="cpr" placeholder="071296-xxxx" required>
             </div>
         </div>
@@ -102,8 +102,9 @@ Survey
 
     // Her indstiller vi størrelsen på teksten i PDF-filen med .setFontSize metoden, dette er så vores titel størrelse med 16px
     doc.setFontSize(16);
-    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10. Der er også blevet rykket
-    // 10 positioner ned på y-aksen (y += 10;) for at gøre plads på næste linje
+    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10.
+    // (tallene vises i millimeter)
+    // Der er også til sidst blevet rykket 10 positioner ned på y-aksen (y += 10;) for at gøre plads på næste linje
     doc.text("Besvaret Spørgeskema", 10, y); y += 10;
 
     // Tekst størrelse på det input vi får fra felterne
@@ -148,7 +149,16 @@ Survey
       // Her har vi et if statement der tjekker om der er blevet skrevet i de uddybende felter, og der bliver indstillet hvilken position svaret skal
       // have. Hvis der ikke bliver uddybet indsætter den bare 4 positioner ned i y-aksen
       if (elaboration) {
-        doc.text(`Uddybning: ${elaboration}`, 10, y); y += 10;
+        // Her har vi en constant variabel der tager den indtastede tekst i uddybningsfeltet og wrapper den ind i adskillige linjer så den passer
+        // indenfor bredden i PDF'en. Der bruges doc.splitTextToSize metoden som tager en lang string (vores tekst) og splitter det til flere arrays,
+        // hvor hver string fylder 180 positioner horisontalt i et array. Dette er så teksten ikke overfylder PDFen
+        const wrappedText = doc.splitTextToSize(`Uddybning: ${elaboration}`, 180);
+        // Denne metode indsætter vores splittede tekst (ovenstående metodes arbejde) i vores PDF-fil
+        doc.text(wrappedText, 10, y);
+        // Denne metode bestemmer at for hver linje (f.eks hvis vi har 3 linjer) vil koden rykke teksten ned med antallet af linjer ganget med 8,
+        // hvor 8 er tekst højden på linjerne. Så hvis der er 3 linjer vil vi så rykke 24 positioner ned
+        y += wrappedText.length * 8;
+      // else statement hvor hvis der ingen uddybning er, vil der blive rykket 4 positioner ned
       } else {
         y += 4;
       }

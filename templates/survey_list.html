@@ -4,19 +4,19 @@ Survey List
 {% endblock %}
 {% block content %}
 <div class="backAndlogout">
-    <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Back</a>
-    <a class="btn btn-secondary" href="/logout" role="button">Logout</a>
+    <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Tilbage</a>
+    <a class="btn btn-secondary" href="/logout" role="button">Log ud</a>
 </div> <br>
-<p> Survey List </p>
+<p> Liste over spørgeskemaer </p>
 
 <div class="card"></div>
     <div class="card-body">
         {% for survey in surveys %}
             <ul class="list-group">
                 <a class="list-group-item" href="{{ url_for('survey', param=survey.uuid)}}"> {{survey.title}} - {{survey.desc}} {{survey.uuid}} </a>
-                <a class="btn btn-secondary" href="{{ url_for('survey_stats', param=survey.uuid) }}" role="button">Statistics</a> <br>
-                <button onclick="copyToClipboard('{{ survey.uuid }}')">Copy</button>
-                <a class="btn btn-secondary" href="{{ url_for('deletesurvey', param=survey.uuid) }}" role="button">Delete</a> <br>
+                <a class="btn btn-secondary" href="{{ url_for('survey_stats', param=survey.uuid) }}" role="button">Statistik</a> <br>
+                <button onclick="copyToClipboard('{{ survey.uuid }}')">Kopier</button>
+                <a class="btn btn-secondary" href="{{ url_for('deletesurvey', param=survey.uuid) }}" role="button">Slet</a> <br>
             </ul>
         {% endfor %}
     </div>
