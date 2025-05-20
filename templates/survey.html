@@ -33,7 +33,7 @@ Survey
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
             {% if question.question_type == 'text' %}
-              <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+              <textarea type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Skriv her..."></textarea>
             {% else %}
               {% for choice in question.choices %}
                 {% if question.question_type == 'multiple_choice' %}
@@ -43,9 +43,7 @@ Survey
                   </label> <br>
                 {% elif question.question_type == 'checkbox' %}
                   <label>
-
-                      <input type="checkbox" name="question_{{question.id}}[]" value="{{choice.id}}" data-text="{{choice.text}}">
-
+                      <input type="checkbox" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}">
                       {{choice.text}}
                   </label> <br>
                 {% endif %}
@@ -104,8 +102,9 @@ Survey
 
     // Her indstiller vi størrelsen på teksten i PDF-filen med .setFontSize metoden, dette er så vores titel størrelse med 16px
     doc.setFontSize(16);
-    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10 (måles i millimeter). Der er også blevet rykket
-    // 10 positioner ned på y-aksen (y += 10;) for at gøre plads på næste linje
+    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10.
+    // (tallene vises i millimeter)
+    // Der er også til sidst blevet rykket 10 positioner ned på y-aksen (y += 10;) for at gøre plads på næste linje
     doc.text("Besvaret Spørgeskema", 10, y); y += 10;
 
     // Tekst størrelse på det input vi får fra felterne
