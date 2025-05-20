@@ -5,11 +5,11 @@ Survey Statistics
 {% endblock %}
 {% block content %}
 <div class="backAndlogout">
-    <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Back</a>
-    <a class="btn btn-secondary" href="/logout" role="button">Logout</a>
+    <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Tilbage</a>
+    <a class="btn btn-secondary" href="/logout" role="button">Log ud</a>
 </div>
-<p>Survey Statistics</p>
-<label> This many as answered the survey: {{number_of_res}} </label> <br>
+<h1>Statistik</h1>
+<label> Antal personer der har besvaret spørgeskema: {{number_of_res}} </label> <br>
 {% for question, img in plots%}
     <label> {{question.text}}</label>
     <img src="data:image/png;base64,{{img}}"> <br>
