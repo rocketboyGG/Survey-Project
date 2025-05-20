@@ -156,6 +156,7 @@ def survey(param):
                     db.session.add(option)
 
         db.session.commit()
+        return redirect(url_for('submitted'))   
             
     return render_template("survey.html", survey=survey, param=param)
 
@@ -254,6 +255,10 @@ def deletesurvey(param):
         db.session.delete(survey)
     db.session.commit()
     return redirect(url_for("survey_list"))
+
+@app.route("/submitted")
+def submitted():
+    return render_template('submitted.html')
 
 def create_survey_1():
     survey = Survey(uuid=str(uuid4()), title="Spørgeskema1", desc="Spørgeskema om søvnvaner")
