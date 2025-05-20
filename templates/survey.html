@@ -33,7 +33,7 @@ Survey
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
             {% if question.question_type == 'text' %}
-              <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+              <textarea type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Skriv her..."></textarea>
             {% else %}
               {% for choice in question.choices %}
                 {% if question.question_type == 'multiple_choice' %}
