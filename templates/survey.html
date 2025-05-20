@@ -32,6 +32,7 @@ Survey
     <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
+<<<<<<< HEAD
 <<<<<<< Updated upstream
             {% for choice in question.choices %}
                 <label>
@@ -43,6 +44,10 @@ Survey
 =======
             {% if question.question_type == 'text' %}
               <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
+=======
+            {% if question.question_type == 'text' %}
+              <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar..." required>
+>>>>>>> diff_question_options
             {% else %}
               {% for choice in question.choices %}
                 {% if question.question_type == 'multiple_choice' %}
@@ -52,13 +57,20 @@ Survey
                   </label> <br>
                 {% elif question.question_type == 'checkbox' %}
                   <label>
+<<<<<<< HEAD
                       <input type="checkbox" name="question_{{question.id}}[]" value="{{choice.id}}" data-text="{{choice.text}}">
+=======
+                      <input type="checkbox" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}">
+>>>>>>> diff_question_options
                       {{choice.text}}
                   </label> <br>
                 {% endif %}
               {% endfor %}
             {% endif %}
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> diff_question_options
         </div>
     </div>
     <br>
@@ -177,6 +189,5 @@ Survey
     doc.save("spoergeskema.pdf");
   }
 </script>
-
 
 {% endblock %}

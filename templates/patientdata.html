@@ -16,10 +16,14 @@ Patient Data
             <label> {{ response.survey.title }}</label> <hr>
             {% for answer in response.answers%}
                 <label> {{answer.question.text}} </label>
-                <label> -> Answer: {{answer.choice.text}} </label> <br>
-                {% if answer.text != "" %}
-                    <p> Uddybelse:  {{answer.text}} </p>
-                {% endif%}
+                {% if answer.question.question_type == 'text' %}
+                    <p> Svar:  {{answer.text}} </p> <br>
+                {% else %}
+                    {% for option in answer.choices %}
+                        <label> -> Svar: {{option.choice.text}} </label> <br>
+                    {% endfor %}
+                {% endif %}
+
             {% endfor %}
         </div>
     </div>
