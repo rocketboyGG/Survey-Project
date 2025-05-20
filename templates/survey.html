@@ -32,27 +32,8 @@ Survey
     <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-            {% for choice in question.choices %}
-                <label>
-                    <input type="radio" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}" required>
-                    {{choice.text}}
-                </label> <br>
-            {% endfor %}
-            <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
-=======
             {% if question.question_type == 'text' %}
               <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar...">
-=======
-            {% if question.question_type == 'text' %}
-              <input type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Uddyb svar..." required>
->>>>>>> diff_question_options
-=======
-            {% if question.question_type == 'text' %}
-              <textarea type="text" class="form-control" name="question_{{question.id}}_uddyb" placeholder="Skriv her..."></textarea>
->>>>>>> 23203b9fe455a790e61cc0d9a89657c27a704b9d
             {% else %}
               {% for choice in question.choices %}
                 {% if question.question_type == 'multiple_choice' %}
@@ -62,27 +43,14 @@ Survey
                   </label> <br>
                 {% elif question.question_type == 'checkbox' %}
                   <label>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                       <input type="checkbox" name="question_{{question.id}}[]" value="{{choice.id}}" data-text="{{choice.text}}">
-=======
-                      <input type="checkbox" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}">
->>>>>>> diff_question_options
-=======
-                      <input type="checkbox" name="question_{{question.id}}" value="{{choice.id}}" data-text="{{choice.text}}">
->>>>>>> 23203b9fe455a790e61cc0d9a89657c27a704b9d
+
                       {{choice.text}}
                   </label> <br>
                 {% endif %}
               {% endfor %}
             {% endif %}
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> diff_question_options
-=======
->>>>>>> 23203b9fe455a790e61cc0d9a89657c27a704b9d
         </div>
     </div>
     <br>
