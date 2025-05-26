@@ -3,20 +3,20 @@
 Login
 {% endblock %}
 {% block content %}
-<div class="center">
-<h4 class="text-center">Login</h4>
-<form class="mx-auto" action="{{url_for("login")}}" method='POST'>
-    <div class="centerlogin">
-      <label for="inputUsername" class="form-label">Brugernavn</label>
-      <input type="username" class="form-control" id="inputUsername" name="username">
-    </div>
-    <div class="centerlogin">
-      <label for="inputPassword4" class="form-label">Adgangskode</label>
-      <input type="password" class="form-control" name="password" id="inputPassword4">
-    </div>
-    <div class="centerlogin">
-      <button type="submit" class="btn btn-custom">Login</button>
-    </div>
+<div class="main-background">
+  <form class="mx-auto" action="{{url_for('login')}}" method='POST'>
+    <h2>Login</h2>
+      <div class="centerlogin">
+        <label for="inputUsername" class="label">Brugernavn</label>
+        <input type="username" class="input" id="inputUsername" name="username" >
+      </div>
+      <div class="centerlogin">
+        <label for="inputPassword4" class="label">Adgangskode</label>
+        <input type="password" class="input" name="password" id="inputPassword4">
+      </div>
+      <div class="centerlogin">
+        <button type="submit" class="default-btn" style="width: 200px;">Login</button>
+      </div>
   </form> 
 </div>
 {% endblock %}

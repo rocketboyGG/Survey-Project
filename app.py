@@ -77,7 +77,7 @@ with app.app_context():
 def load_user(user_id):
     return Users.query.get(int(user_id))
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username")
@@ -93,11 +93,7 @@ def login():
 
     return render_template("login.html")
 
-@app.route("/")
-def home():
-    #create_survey_2()
-    #generate_admin_login()
-    return render_template("home.html")
+
 
 @app.route("/admin_dashboard/")
 @login_required
@@ -120,7 +116,7 @@ def patientdata(patientid):
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("home"))
+    return redirect(url_for("login"))
 
 @app.route("/survey/<string:param>", methods = ["GET", "POST"])
 def survey(param):

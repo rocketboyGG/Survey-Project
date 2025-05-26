@@ -4,37 +4,31 @@ Survey Builder
 {% endblock %}
 {% block content %}
 <div class="backAndlogout">
-    <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Tilbage</a>
-    <a class="btn btn-secondary" href="/logout" role="button">Log ud</a>
+    <a class="btn neutral-btn" href="/admin_dashboard" role="button">&larr; Tilbage</a>
+    <a class="btn negativ-btn" href="/logout" role="button">Log ud</a>
 </div>
-<div class="centerbuilder">
-<form action="{{ url_for('survey_builder') }}" method="POST">
-    <div class="card">
-        <div class="card-body">
-            <label for="title">Titel:</label><br>
-            <input type="text" class="form-control bold-border" name="title" placeholder="Skriv her..." required><br>
-            <label for="description">Beskrivelse:</label><br>
-            <input type="text" class="form-control bold-border" name="description" placeholder="Skriv her..." required><br><br>
 
-            <div id="questions">
-            </div>
-            <br>
+<div class="survey-builder">
+    <form action="{{ url_for('survey_builder') }}" method="POST">
+        <label class="label">Titel:</label>
+        <input type="text" class="input" name="title" placeholder="Skriv her..." required>
+        <label class="label">Beskrivelse:</label>
+        <input type="text" class="input" name="description" placeholder="Skriv her..." required>
 
-            <select class="form-select" id="questionType" aria-label="Default select example">
-            <option selected value="1">Multiple Choice</option>
-            <option value="2">Checkboxes</option>
-            <option value="3">Textbox</option>
-            </select>
-
-            <a class="btn btn-primary" role="button" onclick="addQuestion()">Tilføj spørgsmål</a>
-            <br><br>
-            <button class="btn btn-success btn-lg" type="submit">Opret spørgeskema</button>
+        <div id="questions">
         </div>
-    </div>
-</form>
-</div>
 
-<script>
+        <select class="form-select" id="questionType" aria-label="Default select example">
+        <option selected value="1">Multiple Choice</option>
+        <option value="2">Checkboxes</option>
+        <option value="3">Textbox</option>
+        </select>
+
+        <a class="btn default-btn" role="button" onclick="addQuestion()">Tilføj spørgsmål</a>
+        <br><br>
+        <button class="btn positiv-btn" type="submit">Opret spørgeskema</button>
+    </form>
+    <script>
     let questionCount = 1;
 
     function addChoice(button) {
@@ -86,12 +80,12 @@ Survey Builder
         questionInput.name = 'questions';
         questionInput.placeholder = 'Spørgsmål titel...';
         questionInput.required = true;
-        questionInput.classList.add('form-control', 'bold-border');
+        questionInput.classList.add('input');
 
         const deleteQuestionBtn = document.createElement('button');
         deleteQuestionBtn.type = 'button';
         deleteQuestionBtn.textContent = 'X Slet spørgsmål';
-        deleteQuestionBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-2');
+        deleteQuestionBtn.classList.add('btn', 'negativ-btn', 'btn-sm', 'mt-2');
         deleteQuestionBtn.onclick = () => {questionCount--; questionWrapper.remove();}
 
         questionBlock.appendChild(questionInput);
@@ -108,7 +102,7 @@ Survey Builder
             choicesDiv.appendChild(firstChoice);
 
             const addChoiceBtn = document.createElement('a');
-            addChoiceBtn.classList.add('btn', 'btn-primary');
+            addChoiceBtn.classList.add('btn', 'default-btn');
             addChoiceBtn.setAttribute('role', 'button');
             addChoiceBtn.setAttribute('onclick', 'addChoice(this)');
             addChoiceBtn.textContent = 'Tilføj svarmulighed';
@@ -126,5 +120,6 @@ Survey Builder
         questionCount++;
     }
 </script>
+</div>
 
 {% endblock %}

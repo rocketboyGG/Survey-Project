@@ -3,33 +3,32 @@
 Survey
 {% endblock %}
 {% block content %}
-<form action="{{url_for("survey", param=param)}}" method="POST">
+<form action="{{url_for('survey', param=param)}}" method="POST">
 
 <h2>{{ survey.title }}</h2>
 <p>{{ survey.desc }}</p>
 
-
-<div class="card">
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="firstname" class="form-label">Fornavn:</label>
-                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Oliver" required>
-            </div>
-            <div class="col-md-6">
-                <label for="lastname" class="form-label">Efternavn:</label>
-                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skaarup" required>
-            </div>
-            <div class="col-12">
-                <label for="CPR-number" class="form-label">CPR-Nummer</label>
-                <input type="text" class="form-control" id="cpr" name="cpr" placeholder="071296-xxxx" required>
-            </div>
-        </div>
+<div class="survey-item">
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="firstname" class="form-label">Fornavn:</label>
+      <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Oliver" required>
     </div>
+    <div class="col-md-6">
+      <label for="lastname" class="form-label">Efternavn:</label>
+      <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skaarup" required>
+    </div>
+    <div class="col-12">
+      <label for="CPR-number" class="form-label">CPR-Nummer</label>
+      <input type="text" class="form-control" id="cpr" name="cpr" placeholder="071296-xxxx" required>
+    </div>
+  </div>
 </div>
 
+<br>
+
 {% for question in survey.questions %}
-    <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
+    <div class="survey-item" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
             {% if question.question_type == 'text' %}
@@ -58,112 +57,59 @@ Survey
 </form>
 
 <script>
-  // En asynchronous funktion vi tilføjer og kalder, som i dette tilfælde er saveToPDF udvidelsen
   async function saveToPDF() {
-    // Her importerer vi jsPDF klassen fra det globale jspdf library vi har i layout.html (const betyder at det ikke er en reassigned variabel,
-    // f.eks doc, vist længere nede)
     const { jsPDF } = window.jspdf;
-    // Her laver vi et dokument instans som vi kan write data til
     const doc = new jsPDF();
-    // Her definerer vi hvor på y-aksen vi er i dokumentet, det vil vi så senere hen rykke videre på
     let y = 10;
 
-    // Her har vi en constant variabel hvor vi bruger getCheckedByName metoden til at finde vores checkbox input (dvs. flere forskellige svar) og sætter
-    // dem ind i vores PDF
     const getCheckedByName = name => {
-    // Her bruger vi document.querySelectorAll metoden til at vælge alle vores elementer i DOM (Document Object Model, hvilket er hele vores html
-    // struktur) som vi så bruger til at kunne læse tekst fra html i vores javascript kode og blive returneret som en NodeList som er en samling af
-    // vores html elementer. Den næste del af koden vælger alle input elementerne med et name attribut (brackets er en naming convention der kommunikerer
-    // at der kan være flere svar, og at det skal returneres som liste eller array) og :checked betyder at den kun vælger de svar der er valgt af brugeren
-    const selected = document.querySelectorAll(`input[name="${name}[]"]:checked`);
-    // Returnerer svarene fra spørgeskemaet i tekst form. Array.from er en metode der konverterer en NodeList (I dette tilfælde selected) til et 
-    // "real array" så vi kan bruge .map() array metoden til at vise svarene. Inde i .map metoden går den igennem alle el (elementer) og tager den
-    // custom label vi har defineret i vores data-text attribut. .join metoden gør at når svarene bliver vist i PDF'en vil de blive vist med et komma
-    // i mellem dem (Svar 1, Svar 2, etc.)
+    const selected = document.querySelectorAll(`input[name="${name}"]:checked`);
     return Array.from(selected).map(el => el.getAttribute("data-text") || el.value).join(", ");
     };
 
-    // Her har vi endnu en constant variabel med en metode (getValByName) der finder input baseret på et name attribut
     const getValByName = name => {
-      // Her har vi en konstant variabel med en metode (document.querySelector) der søger på name attributer i et html input og det name der matcher selectoren vil så returneres
-      // Man kan også vælge at søge efter en bestemt name attribut hvis man vil det, f.eks document.querySelector('[name="firstname"]');
       const el = document.querySelector(`[name="${name}"]`);
-      // Returnerer den hentede value (name attribute), i det her tilfælde vil den så vise teksten til spørgsmålet
       return el?.value || '';
     };
 
-    // Her har vi en metode der søger efter det valgte radio input så den kan hente dataen
     const getRadioByName = name => {
-      // Dette er så den "selected" type input som er "checked"
       const selected = document.querySelector(`input[name="${name}"]:checked`);
-      // Her returneres selected værdien (input med data-text attributen, viser teksten til spørgsmålet)
       return selected ? selected.getAttribute("data-text") || selected.value : '';
     };
 
-    // Her indstiller vi størrelsen på teksten i PDF-filen med .setFontSize metoden, dette er så vores titel størrelse med 16px
     doc.setFontSize(16);
-    // Her har vi valgt hvad der skal stå i teksten med .text metoden, og hvor i dokumentet det skal stå, 10 repræsenterer så x=10 og y=10.
-    // (tallene vises i millimeter)
-    // Der er også til sidst blevet rykket 10 positioner ned på y-aksen (y += 10;) for at gøre plads på næste linje
     doc.text("Besvaret Spørgeskema", 10, y); y += 10;
 
-    // Tekst størrelse på det input vi får fra felterne
     doc.setFontSize(12);
-    // Her vælger vi teksten og positionen vi gerne vil have til disse felter i PDF-filen, og vi bruger getValByName metoden til at hente dataen fra
-    // vores html input felter og indsætte dem i vores PDF-fil
     doc.text(`First name: ${getValByName("firstname")}`, 10, y); y += 8;
     doc.text(`Last name: ${getValByName("lastname")}`, 10, y); y += 8;
     doc.text(`CPR Number: ${getValByName("cpr")}`, 10, y); y += 10;
 
-    // Denne metode tager alle html elementer der har .question-block klassen. Det vil så returnere en såkaldt NodeList, som er en slags sekvens af
-    // de forskellige elementer der repræsenterer vores spørgsmål
     const questionBlocks = document.querySelectorAll(".question-block");
-    // Denne metode looper igennem alle ting med .question-block som indeholder block (et element til spørgsmål) og index (spørgsmålets ID)
     questionBlocks.forEach((block, index) => {
-      // Denne metode tilgår alle html elementer med et data-attribut via dataset metoden og trækker værdien fra data-question-id
       const questionId = block.dataset.questionId;
-      // Denne metode tager data-question-text attributen (Teksten fra spørgsmålet)
       const questionText = block.dataset.questionText;
-      // Denne metode tager værdien fra data attributen i vores html (altså hvilken type spørgsmål det er, multiple choice eller checkbox f.eks) 
       const questionType = block.dataset.questionType;
-      // Dette er en tom variabel der så bliver udfyldt senere med vores svar i PDF'en
       let answer = '';
-      // Her har vi et if statement med hvis vores questionType = multiple_choice
+
       if (questionType === 'multiple_choice') {
-      // Denne metode kalder vores "helper" funktion (getRadioByName) til at få vores selected radio button værdi, f.eks hvis vores questionID er 3,
-      // vil den lede efter et spørgsmål med name attributen name="question_3"
       answer = getRadioByName(`question_${questionId}`);
-      // Hvis questionType = checkbox
       } else if (questionType === 'checkbox') {
-      // Denne metode kalder getCheckedByName funktionen, der basically gør det samme som getRadioByName, bare hvor den returnerer de valgte svar fra
-      // checkboxen som en string værdi ("Svar 1, Svar 2")
       answer = getCheckedByName(`question_${questionId}`);
       }
-      // Denne metode gør nærmest det samme, bare hvor den trækker input fra uddybningsfelterne
+
       const elaboration = getValByName(`question_${questionId}_uddyb`);
-      // Her indstiller hvilket spørgsmål der besvares, index + 1 betyder at i stedet for at der står "Spørgsmål 0" vil det så være 1 i stedet.
-      // questionText er så det tekst der står i spørgsmålet.
       doc.text(`Spørgsmål ${index + 1}: ${questionText}`, 10, y); y += 8;
-      // Her indstiller vi hvilket svar der skal vises
       doc.text(`Svar: ${answer}`, 10, y); y += 8;
-      // Her har vi et if statement der tjekker om der er blevet skrevet i de uddybende felter, og der bliver indstillet hvilken position svaret skal
-      // have. Hvis der ikke bliver uddybet indsætter den bare 4 positioner ned i y-aksen
+
       if (elaboration) {
-        // Her har vi en constant variabel der tager den indtastede tekst i uddybningsfeltet og wrapper den ind i adskillige linjer så den passer
-        // indenfor bredden i PDF'en. Der bruges doc.splitTextToSize metoden som tager en lang string (vores tekst) og splitter det til flere arrays,
-        // hvor hver string fylder 180 positioner horisontalt i et array. Dette er så teksten ikke overfylder PDFen
         const wrappedText = doc.splitTextToSize(`Uddybning: ${elaboration}`, 180);
-        // Denne metode indsætter vores splittede tekst (ovenstående metodes arbejde) i vores PDF-fil
         doc.text(wrappedText, 10, y);
-        // Denne metode bestemmer at for hver linje (f.eks hvis vi har 3 linjer) vil koden rykke teksten ned med antallet af linjer ganget med 8,
-        // hvor 8 er tekst højden på linjerne. Så hvis der er 3 linjer vil vi så rykke 24 positioner ned
         y += wrappedText.length * 8;
-      // else statement hvor hvis der ingen uddybning er, vil der blive rykket 4 positioner ned
       } else {
         y += 4;
       }
     });
-    // Her indstilles hvad spørgeskema filen hedder når den downloades, her bruges save metoden
     doc.save("spoergeskema.pdf");
   }
 </script>

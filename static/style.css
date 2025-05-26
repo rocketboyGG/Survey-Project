@@ -1,28 +1,248 @@
-body {
-    background-color: #e6f2ff;
-    font-family: Arial, sans-serif;
+html, body {
+    background-color: #CAE8DD;
+    font-family: "Roboto", sans-serif;
     margin: 0;
     padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.center {
-    padding: 200px 0;
-    max-width: 500px;
-    margin: auto;
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
+.content {
+    flex: 1;
+    padding: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.main-background {
+  background-image: url('/static/images/back.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* footer */
+.footer {
+  background-color: #808b96;
+  color: #fff;
+  padding: 0px 100px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Input bokse */
+.input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1px solid #000;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3 ease;
+}
+
+.input:focus {
+    border-color: #2b7a78;
+    box-shadow: 0 0 5px rgb(43, 122, 120, 0.5);
+    outline: none;
+}
+
+/* Forskellige slags knapper */
+.default-btn {
+    background: linear-gradient(to right, #6BB9B3, #5CAEB5);
+    color: #000;
+    border: 2px solid #4CA3B6;
+    margin: 10px;
+    border-radius: 12px;
+    padding: 10px 50px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.default-btn:hover {
+    background: linear-gradient(to right, #5CAEB5, #6BB9B3);
+    color: #00332a;
+    border: 2px solid #4CA3B6;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.neutral-btn {
+    background: linear-gradient(to right, #999999, #777777);
+    color: #000;
+    border: 2px solid #666666;
+    margin: 10px;
+    border-radius: 12px;
+    padding: 5px 10px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.neutral-btn:hover {
+    background: linear-gradient(to right, #777777, #999999);
+    color: #000;
+    border: 2px solid #111111;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.negativ-btn {
+    background: linear-gradient(to right, #ffbaba, #ff7b7b);
+    color: #000;
+    border: 2px solid #ff5252;
+    margin: 10px;
+    border-radius: 12px;
+    padding: 5px 10px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.negativ-btn:hover {
+    background: linear-gradient(to right, #ff7b7b, #ffbaba);
+    color: #000;
+    border: 2px solid #ff5252;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.positiv-btn {
+    background: linear-gradient(to right, #c7e1b4, #9cb770);
+    color: #000;
+    border: 2px solid #628b61;
+    margin: 10px;
+    border-radius: 12px;
+    padding: 10px 50px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.positiv-btn:hover {
+    background: linear-gradient(to right, #9cb770, #c7e1b4);
+    color: #000;
+    border: 2px solid #628b61;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* survey list */
+.survey-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    padding: 1rem;
+}
+
+.survey-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1.5rem;
+}
+
+.survey-item {
+    border: #4CA3B6;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background-color: #6BB9B3;
+    transition: background-color 0.3 ease;
+}
+
+/* survey builder site */
+.survey-builder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: 8px;
+    background-color: #6bb9b3;
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.survey-builder form > * {
+    margin-bottom: 1.5rem;
+}
+
+.question-wrapper {
+    background-color: #2b7a78;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.question-wrapper input,
+.question-wrapper .btn {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.backAndlogout {
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* survey stats laybout */
+.stat-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.stat-block label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.stat-block img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.patient-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    
+}
+
+.patient-list .default-btn {
+    width: 100%;
+    max-width: 400px; /* optional max width */
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Random shit */
 .centerlogin {
     padding: 10px 0;
     max-width: 500px;
     margin: auto;
-}
-
-.centerbuilder {
-    padding: 10px 0;
-    max-width: 500px;
-    margin: auto;
-    text-align: center;
-    display: block;
 }
 
 .bold-border {
@@ -36,27 +256,6 @@ body {
 .logout {
     text-align: end;
 }
-.backAndlogout {
-    padding: 10px 0;
-    display: flex;
-    justify-content: space-between;
-}
-.btn-custom {
-    background: linear-gradient(to right, #ccf2e2, #b2e8d4);
-    color: #00664d;
-    border: 2px solid #99e6cc;
-    border-radius: 12px;
-    padding: 10px 22px;
-    font-weight: bold;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.btn-custom:hover {
-    background: linear-gradient(to right, #a3e3ca, #80d8bd);
-    color: #00332a;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
 
 .page-center {
     display: flex;
@@ -66,11 +265,6 @@ body {
     min-height: 100vh;
     padding-top: 80px;
     gap: 30px;
-}
-
-.logo-img {
-    max-width: 400px;
-    height: auto;
 }
 
 .button-row {
