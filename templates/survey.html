@@ -3,33 +3,32 @@
 Survey
 {% endblock %}
 {% block content %}
-<form action="{{url_for("survey", param=param)}}" method="POST">
+<form action="{{url_for('survey', param=param)}}" method="POST">
 
 <h2>{{ survey.title }}</h2>
 <p>{{ survey.desc }}</p>
 
-
-<div class="card">
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="firstname" class="form-label">Fornavn:</label>
-                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Oliver" required>
-            </div>
-            <div class="col-md-6">
-                <label for="lastname" class="form-label">Efternavn:</label>
-                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skaarup" required>
-            </div>
-            <div class="col-12">
-                <label for="CPR-number" class="form-label">CPR-Nummer</label>
-                <input type="text" class="form-control" id="cpr" name="cpr" placeholder="071296-xxxx" required>
-            </div>
-        </div>
+<div class="survey-item">
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="firstname" class="form-label">Fornavn:</label>
+      <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Oliver" required>
     </div>
+    <div class="col-md-6">
+      <label for="lastname" class="form-label">Efternavn:</label>
+      <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skaarup" required>
+    </div>
+    <div class="col-12">
+      <label for="CPR-number" class="form-label">CPR-Nummer</label>
+      <input type="text" class="form-control" id="cpr" name="cpr" placeholder="071296-xxxx" required>
+    </div>
+  </div>
 </div>
 
+<br>
+
 {% for question in survey.questions %}
-    <div class="card question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
+    <div class="survey-item" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
             {% if question.question_type == 'text' %}

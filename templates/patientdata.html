@@ -4,8 +4,8 @@ Patient Data
 {% endblock %}
 {% block content %}
 <div class="backAndlogout">
-        <a class="btn btn-secondary" href="/admin_dashboard" role="button">< Back</a>
-        <a class="btn btn-secondary" href="/logout" role="button">Logout</a>
+        <a class="btn neutral-btn" href="/admin_dashboard" role="button">&larr; Tilbage</a>
+        <a class="btn negativ-btn" href="/logout" role="button">Log ud</a>
 </div>
 
 <label>Patient: {{ responses[0].patient.firstname}} {{ responses[0].patient.lastname}} {{ responses[0].patient.cpr}}</label>
