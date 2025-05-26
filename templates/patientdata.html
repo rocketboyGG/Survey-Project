@@ -13,7 +13,7 @@ Patient Data
 {% for response in responses %}
     <div class="card">
         <div class="card-body">
-            <label> {{ response.survey.title }}</label> <hr>
+            <label> {{ response.survey.title }} svaret  {{ response.timestamp }} </label> <hr>
             {% for answer in response.answers%}
                 <label> {{answer.question.text}} </label>
                 {% if answer.question.question_type == 'text' %}
