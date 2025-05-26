@@ -28,7 +28,7 @@ Survey
 <br>
 
 {% for question in survey.questions %}
-    <div class="survey-item" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
+    <div class="survey-item question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
             {% if question.question_type == 'text' %}
