@@ -12,15 +12,15 @@ Survey
   <div class="row g-3">
     <div class="col-md-6">
       <label for="firstname" class="form-label">Fornavn:</label>
-      <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Oliver" required>
+      <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Skriv her..." required>
     </div>
     <div class="col-md-6">
       <label for="lastname" class="form-label">Efternavn:</label>
-      <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skaarup" required>
+      <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Skriv her..." required>
     </div>
     <div class="col-12">
       <label for="CPR-number" class="form-label">CPR-Nummer</label>
-      <input type="text" class="form-control" id="cpr" name="cpr" placeholder="071296-xxxx" required>
+      <input type="text" class="form-control" id="cpr" name="cpr" placeholder="Skriv her..." required>
     </div>
   </div>
 </div>
@@ -28,7 +28,7 @@ Survey
 <br>
 
 {% for question in survey.questions %}
-    <div class="survey-item" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
+    <div class="survey-item question-block" data-question-id="{{question.id}}" data-question-text="{{question.text}}"  data-question-type="{{ question.question_type }}">
         <div class="card-body">
             <label class="question-label">{{question.text}}</label> <br>
             {% if question.question_type == 'text' %}
