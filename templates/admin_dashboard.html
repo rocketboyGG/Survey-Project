@@ -8,10 +8,11 @@ Admin Dashboard
         <label>Velkommen {{username}} </label>
         <a class="btn negativ-btn" href="/logout" role="button">Log ud</a>
     </div>
-    <h1>Patient Liste</h1>
     <a class="btn default-btn btn-lg" href="{{url_for('survey_list')}}" role="button">Spørgeskemaer</a>
     <a class="btn default-btn btn-lg" href="{{url_for('survey_builder')}}" role="button">Opret Spørgeskema</a> 
     <br><br>
+    <h1>Patientliste</h1>
+    <hr style="border: none; height: 3px; background-color: black; width: 600px; margin: auto;">
 </div>
 
 {% for patient in patients %}
