@@ -164,9 +164,9 @@ def survey_builder():   #Survey builder funktion
         description = request.form.get('description')   #Tager den string som er indtastet i det html tekst input som har: name="description"
         questions_data = request.form.getlist('questions')  #Tager alle inputs som har: name="questions" og gemmer dem som en liste
 
-        if not title or not questions_data: #Sørger for at man ikke kan submit et survey uden minimum titel og et spørgsmål, men eftersom vores tekst input er sat som required,
-            return "Missing data", 400      # er det her kun som ekstra sikkerhed på backend. Fordi det er muligt at bypass required client-side
-                                            #400 = HTTP status code:"Bad Request"
+        if not questions_data: #Sørger for at man ikke kan submit et survey uden minimum et spørgsmål.
+            return "Missing data", 400      #400 = HTTP status code:"Bad Request"
+                                            
         #Laver nyt survey
         new_survey = Survey(uuid=str(uuid4()), title=title, desc=description)  #Laver et new_survey objekt fra Survey class'en og vælger hvilke værdier der skal indsættes på title og desc
         db.session.add(new_survey)  #Tilføjer new_survey til SQLAlchemy sessionen
@@ -195,8 +195,8 @@ def survey_builder():   #Survey builder funktion
 
                 #Tilføjer choices til databasen
                 for choice_text in question_choices:    #Looper igennem alle choices og tilføjer dem en ad gangen
-                    if choice_text.strip():  #Sikre at de ikke er tomme. Endnu et backend sikkerheds check eftersom tekst input er sat som required.
-                        choice = Choice(text=choice_text, questionid=question.id)   #Laver et question objekt fra Question class'en og vælger hvilke værdier der skal indsættes på text og questionid
+                    if choice_text.strip():  #Sikre at de ikke er tomme. Feltet er sat som required, men dette sikre at der ikke oprettes en svarmulighed hvis man f.eks. kun har sat et mellemrum i tekstfeltet
+                        choice = Choice(text=choice_text, questionid=question.id)   #Laver et choice objekt fra Choice class'en og vælger hvilke værdier der skal indsættes på text og questionid
                         db.session.add(choice)  #Tilføjer choice til SQLAlchemy sessionen
 
         db.session.commit()     #Commit'er til databasen
