@@ -8,7 +8,8 @@ Patient Data
         <a class="btn negativ-btn" href="/logout" role="button">Log ud</a>
 </div>
 
-<label>Patient: {{ responses[0].patient.firstname}} {{ responses[0].patient.lastname}} {{ responses[0].patient.cpr}}</label>
+<label>Patient: {{ responses[0].patient.firstname}} {{ responses[0].patient.lastname}} 
+    {{ responses[0].patient.cpr}}</label>
 
 {% for response in responses %}
     <div class="card">

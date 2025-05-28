@@ -94,8 +94,6 @@ def login():
 
     return render_template("login.html")
 
-
-
 @app.route("/admin_dashboard/")
 @login_required
 def admin_dashboard():
